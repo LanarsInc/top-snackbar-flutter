@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:top_snackbar_flutter/tap_bounce_container.dart';
 
-const _showOutAnimationDuration = Duration(milliseconds: 1200);
-const _hideOutAnimationDuration = Duration(milliseconds: 300);
-const _messageDisplayDuration = Duration(milliseconds: 1500);
-
-void showTopSnackBar(BuildContext context, Widget child) async {
+void showTopSnackBar(
+  BuildContext context,
+  Widget child, {
+  Duration showOutAnimationDuration = const Duration(milliseconds: 1200),
+  Duration hideOutAnimationDuration = const Duration(milliseconds: 550),
+  Duration displayDuration = const Duration(milliseconds: 3000),
+  double additionalTopPadding = 16.0,
+}) async {
   final overlayState = Overlay.of(context);
   OverlayEntry overlayEntry;
   overlayEntry = OverlayEntry(
@@ -14,6 +18,10 @@ void showTopSnackBar(BuildContext context, Widget child) async {
         onDismissed: () {
           overlayEntry.remove();
         },
+        showOutAnimationDuration: showOutAnimationDuration,
+        hideOutAnimationDuration: hideOutAnimationDuration,
+        displayDuration: displayDuration,
+        additionalTopPadding: additionalTopPadding,
       );
     },
   );
@@ -24,24 +32,34 @@ void showTopSnackBar(BuildContext context, Widget child) async {
 class TopSnackBar extends StatefulWidget {
   final Widget child;
   final VoidCallback onDismissed;
+  final showOutAnimationDuration;
+  final hideOutAnimationDuration;
+  final displayDuration;
+  final additionalTopPadding;
 
   TopSnackBar({
     Key key,
     @required this.child,
     @required this.onDismissed,
+    @required this.showOutAnimationDuration,
+    @required this.hideOutAnimationDuration,
+    @required this.displayDuration,
+    @required this.additionalTopPadding,
   }) : super(key: key);
 
   @override
   _TopSnackBarState createState() => _TopSnackBarState();
 }
 
-class _TopSnackBarState extends State<TopSnackBar> with SingleTickerProviderStateMixin {
+class _TopSnackBarState extends State<TopSnackBar>
+    with SingleTickerProviderStateMixin {
   Animation offsetAnimation;
   AnimationController animationController;
-  double topPosition = 8;
+  double topPosition;
 
   @override
   void initState() {
+    topPosition = widget.additionalTopPadding;
     _setupAndStartAnimation();
     super.initState();
   }
@@ -49,8 +67,8 @@ class _TopSnackBarState extends State<TopSnackBar> with SingleTickerProviderStat
   void _setupAndStartAnimation() async {
     animationController = AnimationController(
       vsync: this,
-      duration: _showOutAnimationDuration,
-      reverseDuration: _hideOutAnimationDuration,
+      duration: widget.showOutAnimationDuration,
+      reverseDuration: widget.hideOutAnimationDuration,
     );
 
     Tween<Offset> offsetTween = Tween<Offset>(
@@ -66,11 +84,13 @@ class _TopSnackBarState extends State<TopSnackBar> with SingleTickerProviderStat
       ),
     )..addStatusListener((status) async {
         if (status == AnimationStatus.completed) {
-          await Future.delayed(_messageDisplayDuration);
+          await Future.delayed(widget.displayDuration);
           animationController.reverse();
-          setState(() {
-            topPosition = 0;
-          });
+          if (mounted) {
+            setState(() {
+              topPosition = 0;
+            });
+          }
         }
 
         if (status == AnimationStatus.dismissed) {
@@ -84,15 +104,20 @@ class _TopSnackBarState extends State<TopSnackBar> with SingleTickerProviderStat
   @override
   Widget build(BuildContext context) {
     return AnimatedPositioned(
-      duration: _hideOutAnimationDuration * 1.5,
+      duration: widget.hideOutAnimationDuration * 1.5,
       curve: Curves.linearToEaseOut,
       top: topPosition,
-      left: 16.0,
-      right: 16.0,
+      left: 16,
+      right: 16,
       child: SlideTransition(
         position: offsetAnimation,
         child: SafeArea(
-          child: widget.child,
+          child: TapBounceContainer(
+            onTap: () {
+              animationController.reverse();
+            },
+            child: widget.child,
+          ),
         ),
       ),
     );

@@ -1,6 +1,8 @@
 # top-snackbar-flutter
 Made in [lanars.com](https://lanars.com).
 
+[![pub package](https://img.shields.io/pub/v/top_snackbar_flutter.svg)](https://pub.dev/packages/top_snackbar_flutter)
+
 <img src="https://raw.githubusercontent.com/LanarsInc/top-snackbar-flutter/main/example/assets/top-snackbar-example.gif" width="300">
 
 # Getting Started

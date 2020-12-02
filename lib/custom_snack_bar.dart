@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+/// Popup widget that you can you by default to show some information
 class CustomSnackBar extends StatefulWidget {
   final String message;
   final Widget icon;

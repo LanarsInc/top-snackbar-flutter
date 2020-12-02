@@ -3,6 +3,10 @@ Made in [lanars.com](https://lanars.com).
 
 [![pub package](https://img.shields.io/pub/v/top_snackbar_flutter.svg)](https://pub.dev/packages/top_snackbar_flutter)
 
+If you need to show the user some information in a nice way, you can use this package. The API is as simple
+as API for regular Material method `showDialog`. If you need to use your own widget to display, you
+can pass it into `showTopSnackBar` function.
+
 <img src="https://raw.githubusercontent.com/LanarsInc/top-snackbar-flutter/main/example/assets/top-snackbar-example.gif" width="300">
 
 # Getting Started

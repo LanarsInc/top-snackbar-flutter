@@ -5,3 +5,5 @@
 .pub/
 
 build/
+Dart_Packages.xml
+Flutter_Plugins.xml

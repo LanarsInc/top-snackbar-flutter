@@ -23,6 +23,7 @@ void showTopSnackBar(
   Duration hideOutAnimationDuration = const Duration(milliseconds: 550),
   Duration displayDuration = const Duration(milliseconds: 3000),
   double additionalTopPadding = 16.0,
+  VoidCallback onTap,
 }) async {
   final overlayState = Overlay.of(context);
   OverlayEntry overlayEntry;
@@ -37,6 +38,7 @@ void showTopSnackBar(
         hideOutAnimationDuration: hideOutAnimationDuration,
         displayDuration: displayDuration,
         additionalTopPadding: additionalTopPadding,
+        onTap: onTap,
       );
     },
   );
@@ -52,6 +54,7 @@ class TopSnackBar extends StatefulWidget {
   final hideOutAnimationDuration;
   final displayDuration;
   final additionalTopPadding;
+  final VoidCallback onTap;
 
   TopSnackBar({
     Key key,
@@ -61,14 +64,14 @@ class TopSnackBar extends StatefulWidget {
     @required this.hideOutAnimationDuration,
     @required this.displayDuration,
     @required this.additionalTopPadding,
+    this.onTap,
   }) : super(key: key);
 
   @override
   _TopSnackBarState createState() => _TopSnackBarState();
 }
 
-class _TopSnackBarState extends State<TopSnackBar>
-    with SingleTickerProviderStateMixin {
+class _TopSnackBarState extends State<TopSnackBar> with SingleTickerProviderStateMixin {
   Animation offsetAnimation;
   AnimationController animationController;
   double topPosition;
@@ -130,6 +133,7 @@ class _TopSnackBarState extends State<TopSnackBar>
         child: SafeArea(
           child: TapBounceContainer(
             onTap: () {
+              widget.onTap?.call();
               animationController.reverse();
             },
             child: widget.child,

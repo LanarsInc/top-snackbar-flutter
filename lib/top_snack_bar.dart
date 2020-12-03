@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:top_snackbar_flutter/tap_bounce_container.dart';
 
-/// Displays a widget that will be passed to `child` parameter above the current
+/// Displays a widget that will be passed to [child] parameter above the current
 /// contents of the app, with transition animation
 ///
-/// The `child` argument is used to pass widget that you want to show
+/// The [child] argument is used to pass widget that you want to show
 ///
-/// The `showOutAnimationDuration` argument is used to specify duration of
+/// The [showOutAnimationDuration] argument is used to specify duration of
 /// enter transition
 ///
-/// The `hideOutAnimationDuration` argument is used to specify duration of
+/// The [hideOutAnimationDuration] argument is used to specify duration of
 /// exit transition
 ///
-/// The `displayDuration` argument is used to specify duration displaying
+/// The [displayDuration] argument is used to specify duration displaying
 ///
-/// The `additionalTopPadding` argument is used to specify amount of top
+/// The [additionalTopPadding] argument is used to specify amount of top
 /// padding that will be added for SafeArea values
+///
+/// The [onTap] callback of [TopSnackBar]
 void showTopSnackBar(
   BuildContext context,
   Widget child, {

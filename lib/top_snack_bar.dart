@@ -16,6 +16,11 @@ import 'package:top_snackbar_flutter/tap_bounce_container.dart';
 ///
 /// The `additionalTopPadding` argument is used to specify amount of top
 /// padding that will be added for SafeArea values
+///
+/// The `overlayState` argument is used to add specific overlay state.
+/// If you will not pass it, it will try to get the current overlay state from
+/// passed `BuildContext`
+///
 void showTopSnackBar(
   BuildContext context,
   Widget child, {
@@ -23,8 +28,11 @@ void showTopSnackBar(
   Duration hideOutAnimationDuration = const Duration(milliseconds: 550),
   Duration displayDuration = const Duration(milliseconds: 3000),
   double additionalTopPadding = 16.0,
+  OverlayState overlayState,
 }) async {
-  final overlayState = Overlay.of(context);
+  if (overlayState == null) {
+    overlayState = Overlay.of(context);
+  }
   OverlayEntry overlayEntry;
   overlayEntry = OverlayEntry(
     builder: (context) {

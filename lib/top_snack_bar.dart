@@ -30,9 +30,7 @@ void showTopSnackBar(
   double additionalTopPadding = 16.0,
   OverlayState overlayState,
 }) async {
-  if (overlayState == null) {
-    overlayState = Overlay.of(context);
-  }
+  overlayState ??= Overlay.of(context);
   OverlayEntry overlayEntry;
   overlayEntry = OverlayEntry(
     builder: (context) {

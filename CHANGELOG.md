@@ -1,6 +1,11 @@
+## 0.0.4 - 10.03.2021
+
+- Migrate to null safety
+- Provide `onTap` callback for `showTopSnackBar` function
+
 ## 0.0.3 - 5.12.2020
 
-- Add additional param in order to specify overlayState at showTopSnackBar function
+- Add additional param in order to specify overlayState at `showTopSnackBar` function
 
 ## 0.0.2 - 2.12.2020
 

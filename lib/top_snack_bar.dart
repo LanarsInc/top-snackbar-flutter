@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:top_snackbar_flutter/tap_bounce_container.dart';
 
-/// Displays a widget that will be passed to `child` parameter above the current
+/// Displays a widget that will be passed to [child] parameter above the current
 /// contents of the app, with transition animation
 ///
-/// The `child` argument is used to pass widget that you want to show
+/// The [child] argument is used to pass widget that you want to show
 ///
-/// The `showOutAnimationDuration` argument is used to specify duration of
+/// The [showOutAnimationDuration] argument is used to specify duration of
 /// enter transition
 ///
-/// The `hideOutAnimationDuration` argument is used to specify duration of
+/// The [hideOutAnimationDuration] argument is used to specify duration of
 /// exit transition
 ///
-/// The `displayDuration` argument is used to specify duration displaying
+/// The [displayDuration] argument is used to specify duration displaying
 ///
-/// The `additionalTopPadding` argument is used to specify amount of top
+/// The [additionalTopPadding] argument is used to specify amount of top
 /// padding that will be added for SafeArea values
 ///
-/// The `overlayState` argument is used to add specific overlay state.
-/// If you will not pass it, it will try to get the current overlay state from
-/// passed `BuildContext`
+/// The [onTap] callback of [TopSnackBar]
 ///
+/// The [overlayState] argument is used to add specific overlay state.
+/// If you will not pass it, it will try to get the current overlay state from
+/// passed [BuildContext]
 void showTopSnackBar(
   BuildContext context,
   Widget child, {
@@ -28,28 +29,26 @@ void showTopSnackBar(
   Duration hideOutAnimationDuration = const Duration(milliseconds: 550),
   Duration displayDuration = const Duration(milliseconds: 3000),
   double additionalTopPadding = 16.0,
-  OverlayState overlayState,
+  VoidCallback? onTap,
+  OverlayState? overlayState,
 }) async {
-  if (overlayState == null) {
-    overlayState = Overlay.of(context);
-  }
-  OverlayEntry overlayEntry;
+  overlayState ??= Overlay.of(context);
+  late OverlayEntry overlayEntry;
   overlayEntry = OverlayEntry(
     builder: (context) {
       return TopSnackBar(
         child: child,
-        onDismissed: () {
-          overlayEntry.remove();
-        },
+        onDismissed: () => overlayEntry.remove(),
         showOutAnimationDuration: showOutAnimationDuration,
         hideOutAnimationDuration: hideOutAnimationDuration,
         displayDuration: displayDuration,
         additionalTopPadding: additionalTopPadding,
+        onTap: onTap,
       );
     },
   );
 
-  overlayState.insert(overlayEntry);
+  overlayState?.insert(overlayEntry);
 }
 
 /// Widget that controls all animations
@@ -60,26 +59,27 @@ class TopSnackBar extends StatefulWidget {
   final hideOutAnimationDuration;
   final displayDuration;
   final additionalTopPadding;
+  final VoidCallback? onTap;
 
   TopSnackBar({
-    Key key,
-    @required this.child,
-    @required this.onDismissed,
-    @required this.showOutAnimationDuration,
-    @required this.hideOutAnimationDuration,
-    @required this.displayDuration,
-    @required this.additionalTopPadding,
+    Key? key,
+    required this.child,
+    required this.onDismissed,
+    required this.showOutAnimationDuration,
+    required this.hideOutAnimationDuration,
+    required this.displayDuration,
+    required this.additionalTopPadding,
+    this.onTap,
   }) : super(key: key);
 
   @override
   _TopSnackBarState createState() => _TopSnackBarState();
 }
 
-class _TopSnackBarState extends State<TopSnackBar>
-    with SingleTickerProviderStateMixin {
-  Animation offsetAnimation;
-  AnimationController animationController;
-  double topPosition;
+class _TopSnackBarState extends State<TopSnackBar> with SingleTickerProviderStateMixin {
+  late Animation offsetAnimation;
+  late AnimationController animationController;
+  double? topPosition;
 
   @override
   void initState() {
@@ -134,10 +134,11 @@ class _TopSnackBarState extends State<TopSnackBar>
       left: 16,
       right: 16,
       child: SlideTransition(
-        position: offsetAnimation,
+        position: offsetAnimation as Animation<Offset>,
         child: SafeArea(
           child: TapBounceContainer(
             onTap: () {
+              widget.onTap?.call();
               animationController.reverse();
             },
             child: widget.child,

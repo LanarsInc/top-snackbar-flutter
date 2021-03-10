@@ -1,9 +1,8 @@
 import 'dart:math';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-/// Popup widget that you can you by default to show some information
+/// Popup widget that you can use by default to show some information
 class CustomSnackBar extends StatefulWidget {
   final String message;
   final Widget icon;
@@ -11,18 +10,9 @@ class CustomSnackBar extends StatefulWidget {
   final TextStyle textStyle;
   final int iconRotationAngle;
 
-  CustomSnackBar({
-    Key key,
-    @required this.message,
-    @required this.icon,
-    @required this.backgroundColor,
-    this.iconRotationAngle = 32,
-    this.textStyle,
-  }) : super(key: key);
-
   const CustomSnackBar.success({
-    Key key,
-    this.message,
+    Key? key,
+    required this.message,
     this.icon = const Icon(
       Icons.sentiment_very_satisfied,
       color: const Color(0x15000000),
@@ -38,8 +28,8 @@ class CustomSnackBar extends StatefulWidget {
   });
 
   const CustomSnackBar.info({
-    Key key,
-    this.message,
+    Key? key,
+    required this.message,
     this.icon = const Icon(
       Icons.sentiment_neutral,
       color: const Color(0x15000000),
@@ -55,8 +45,8 @@ class CustomSnackBar extends StatefulWidget {
   });
 
   const CustomSnackBar.error({
-    Key key,
-    this.message,
+    Key? key,
+    required this.message,
     this.icon = const Icon(
       Icons.error_outline,
       color: const Color(0x15000000),
@@ -114,8 +104,8 @@ class _CustomSnackBarState extends State<CustomSnackBar> {
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Text(
                 widget.message,
-                style: theme.textTheme.bodyText2.merge(
-                  widget.textStyle ?? TextStyle(),
+                style: theme.textTheme.bodyText2?.merge(
+                  widget.textStyle,
                 ),
                 textAlign: TextAlign.center,
                 overflow: TextOverflow.ellipsis,

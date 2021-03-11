@@ -1,3 +1,7 @@
+## 1.0.0 - 11.03.2021
+
+-Clean up code
+
 ## 0.0.4 - 10.03.2021
 
 - Migrate to null safety

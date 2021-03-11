@@ -76,7 +76,8 @@ class TopSnackBar extends StatefulWidget {
   _TopSnackBarState createState() => _TopSnackBarState();
 }
 
-class _TopSnackBarState extends State<TopSnackBar> with SingleTickerProviderStateMixin {
+class _TopSnackBarState extends State<TopSnackBar>
+    with SingleTickerProviderStateMixin {
   late Animation offsetAnimation;
   late AnimationController animationController;
   double? topPosition;

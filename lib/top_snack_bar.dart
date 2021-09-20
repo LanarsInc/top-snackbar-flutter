@@ -40,7 +40,10 @@ void showTopSnackBar(
     builder: (context) {
       return TopSnackBar(
         child: child,
-        onDismissed: () => overlayEntry.remove(),
+        onDismissed: () {
+          overlayEntry.remove();
+          _previousEntry = null;
+        },
         showOutAnimationDuration: showOutAnimationDuration,
         hideOutAnimationDuration: hideOutAnimationDuration,
         displayDuration: displayDuration,
@@ -91,6 +94,12 @@ class _TopSnackBarState extends State<TopSnackBar>
     topPosition = widget.additionalTopPadding;
     _setupAndStartAnimation();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
   }
 
   void _setupAndStartAnimation() async {

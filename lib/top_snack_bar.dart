@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:top_snackbar_flutter/tap_bounce_container.dart';
 
+OverlayEntry? _previousEntry;
+
 /// Displays a widget that will be passed to [child] parameter above the current
 /// contents of the app, with transition animation
 ///
@@ -47,8 +49,10 @@ void showTopSnackBar(
       );
     },
   );
-
+  
+  _previousEntry?.remove();
   overlayState?.insert(overlayEntry);
+  _previousEntry = overlayEntry;
 }
 
 /// Widget that controls all animations

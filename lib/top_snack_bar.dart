@@ -123,8 +123,8 @@ class _TopSnackBarState extends State<TopSnackBar>
     )..addStatusListener((status) async {
         if (status == AnimationStatus.completed) {
           await Future.delayed(widget.displayDuration);
-          animationController.reverse();
-          if (mounted) {
+          if(mounted) {
+            animationController.reverse();
             setState(() {
               topPosition = 0;
             });
@@ -136,7 +136,9 @@ class _TopSnackBarState extends State<TopSnackBar>
         }
       });
 
-    animationController.forward();
+    if(mounted) {
+      animationController.forward();
+    }
   }
 
   @override
@@ -152,8 +154,10 @@ class _TopSnackBarState extends State<TopSnackBar>
         child: SafeArea(
           child: TapBounceContainer(
             onTap: () {
-              widget.onTap?.call();
-              animationController.reverse();
+              if(mounted) {
+                widget.onTap?.call();
+                animationController.reverse();
+              }
             },
             child: widget.child,
           ),

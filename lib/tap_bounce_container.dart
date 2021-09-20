@@ -56,7 +56,9 @@ class _TapBounceContainerState extends State<TapBounceContainer>
   }
 
   void _onTapDown(TapDownDetails details) {
-    _controller.forward();
+    if(mounted) {
+      _controller.forward();
+    }
   }
 
   void _onTapUp(TapUpDetails details) async {
@@ -68,8 +70,10 @@ class _TapBounceContainerState extends State<TapBounceContainer>
   }
 
   Future _closeSnackBar() async {
-    _controller.reverse();
-    await Future.delayed(animationDuration);
-    widget.onTap?.call();
+    if(mounted) {
+      _controller.reverse();
+      await Future.delayed(animationDuration);
+      widget.onTap?.call();
+    }
   }
 }

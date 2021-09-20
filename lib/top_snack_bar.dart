@@ -52,7 +52,7 @@ void showTopSnackBar(
       );
     },
   );
-  
+
   _previousEntry?.remove();
   overlayState?.insert(overlayEntry);
   _previousEntry = overlayEntry;
@@ -123,7 +123,7 @@ class _TopSnackBarState extends State<TopSnackBar>
     )..addStatusListener((status) async {
         if (status == AnimationStatus.completed) {
           await Future.delayed(widget.displayDuration);
-          if(mounted) {
+          if (mounted) {
             animationController.reverse();
             setState(() {
               topPosition = 0;
@@ -136,7 +136,7 @@ class _TopSnackBarState extends State<TopSnackBar>
         }
       });
 
-    if(mounted) {
+    if (mounted) {
       animationController.forward();
     }
   }
@@ -154,7 +154,7 @@ class _TopSnackBarState extends State<TopSnackBar>
         child: SafeArea(
           child: TapBounceContainer(
             onTap: () {
-              if(mounted) {
+              if (mounted) {
                 widget.onTap?.call();
                 animationController.reverse();
               }

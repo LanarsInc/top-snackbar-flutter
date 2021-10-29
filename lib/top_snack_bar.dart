@@ -67,6 +67,8 @@ class TopSnackBar extends StatefulWidget {
   final displayDuration;
   final additionalTopPadding;
   final VoidCallback? onTap;
+  final double leftPadding;
+  final double rightPadding;
 
   TopSnackBar({
     Key? key,
@@ -77,6 +79,8 @@ class TopSnackBar extends StatefulWidget {
     required this.displayDuration,
     required this.additionalTopPadding,
     this.onTap,
+    this.leftPadding = 16,
+    this.rightPadding = 16,
   }) : super(key: key);
 
   @override
@@ -147,8 +151,8 @@ class _TopSnackBarState extends State<TopSnackBar>
       duration: widget.hideOutAnimationDuration * 1.5,
       curve: Curves.linearToEaseOut,
       top: topPosition,
-      left: 16,
-      right: 16,
+      left: widget.leftPadding,
+      right: widget.rightPadding,
       child: SlideTransition(
         position: offsetAnimation as Animation<Offset>,
         child: SafeArea(

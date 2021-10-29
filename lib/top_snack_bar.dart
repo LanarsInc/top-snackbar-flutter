@@ -33,6 +33,8 @@ void showTopSnackBar(
   double additionalTopPadding = 16.0,
   VoidCallback? onTap,
   OverlayState? overlayState,
+  double leftPadding = 16,
+  double rightPadding = 16,
 }) async {
   overlayState ??= Overlay.of(context);
   late OverlayEntry overlayEntry;
@@ -49,6 +51,8 @@ void showTopSnackBar(
         displayDuration: displayDuration,
         additionalTopPadding: additionalTopPadding,
         onTap: onTap,
+        leftPadding: leftPadding,
+        rightPadding: rightPadding,
       );
     },
   );

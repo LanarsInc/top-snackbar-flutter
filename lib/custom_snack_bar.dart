@@ -12,6 +12,7 @@ class CustomSnackBar extends StatefulWidget {
   final double iconPositionTop;
   final double iconPositionLeft;
   final EdgeInsetsGeometry messagePadding;
+  final double textScaleFactor;
 
   const CustomSnackBar.success({
     Key? key,
@@ -31,6 +32,7 @@ class CustomSnackBar extends StatefulWidget {
     this.iconPositionTop = -10,
     this.iconPositionLeft = -8,
     this.backgroundColor = const Color(0xff00E676),
+    this.textScaleFactor = 1.0,
   });
 
   const CustomSnackBar.info({
@@ -51,6 +53,7 @@ class CustomSnackBar extends StatefulWidget {
     this.iconPositionTop = -10,
     this.iconPositionLeft = -8,
     this.backgroundColor = const Color(0xff2196F3),
+    this.textScaleFactor = 1.0,
   });
 
   const CustomSnackBar.error({
@@ -71,6 +74,7 @@ class CustomSnackBar extends StatefulWidget {
     this.iconPositionTop = -10,
     this.iconPositionLeft = -8,
     this.backgroundColor = const Color(0xffff5252),
+    this.textScaleFactor = 1.0,
   });
 
   @override
@@ -121,6 +125,7 @@ class _CustomSnackBarState extends State<CustomSnackBar> {
                 textAlign: TextAlign.center,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 2,
+                textScaleFactor: widget.textScaleFactor,
               ),
             ),
           ),

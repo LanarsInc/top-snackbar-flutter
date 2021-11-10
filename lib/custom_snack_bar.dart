@@ -11,10 +11,15 @@ class CustomSnackBar extends StatefulWidget {
   final int iconRotationAngle;
   final List<BoxShadow> boxShadow;
   final BorderRadius borderRadius;
+  final double iconPositionTop;
+  final double iconPositionLeft;
+  final EdgeInsetsGeometry messagePadding;
+  final double textScaleFactor;
 
   const CustomSnackBar.success({
     Key? key,
     required this.message,
+    this.messagePadding = const EdgeInsets.symmetric(horizontal: 24),
     this.icon = const Icon(
       Icons.sentiment_very_satisfied,
       color: const Color(0x15000000),
@@ -26,14 +31,18 @@ class CustomSnackBar extends StatefulWidget {
       color: Colors.white,
     ),
     this.iconRotationAngle = 32,
+    this.iconPositionTop = -10,
+    this.iconPositionLeft = -8,
     this.backgroundColor = const Color(0xff00E676),
     this.boxShadow = kDefaultBoxShadow,
     this.borderRadius = kDefaultBorderRadius,
+    this.textScaleFactor = 1.0,
   });
 
   const CustomSnackBar.info({
     Key? key,
     required this.message,
+    this.messagePadding = const EdgeInsets.symmetric(horizontal: 24),
     this.icon = const Icon(
       Icons.sentiment_neutral,
       color: const Color(0x15000000),
@@ -45,14 +54,18 @@ class CustomSnackBar extends StatefulWidget {
       color: Colors.white,
     ),
     this.iconRotationAngle = 32,
+    this.iconPositionTop = -10,
+    this.iconPositionLeft = -8,
     this.backgroundColor = const Color(0xff2196F3),
-        this.boxShadow = kDefaultBoxShadow,
+    this.boxShadow = kDefaultBoxShadow,
     this.borderRadius = kDefaultBorderRadius,
+    this.textScaleFactor = 1.0,
   });
 
   const CustomSnackBar.error({
     Key? key,
     required this.message,
+    this.messagePadding = const EdgeInsets.symmetric(horizontal: 24),
     this.icon = const Icon(
       Icons.error_outline,
       color: const Color(0x15000000),
@@ -64,9 +77,12 @@ class CustomSnackBar extends StatefulWidget {
       color: Colors.white,
     ),
     this.iconRotationAngle = 32,
+    this.iconPositionTop = -10,
+    this.iconPositionLeft = -8,
     this.backgroundColor = const Color(0xffff5252),
-        this.boxShadow = kDefaultBoxShadow,
+    this.boxShadow = kDefaultBoxShadow,
     this.borderRadius = kDefaultBorderRadius,
+    this.textScaleFactor = 1.0,
   });
 
   @override
@@ -78,6 +94,7 @@ class _CustomSnackBarState extends State<CustomSnackBar> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
+      clipBehavior: Clip.hardEdge,
       height: 80,
       decoration: BoxDecoration(
         color: widget.backgroundColor,
@@ -88,21 +105,19 @@ class _CustomSnackBarState extends State<CustomSnackBar> {
       child: Stack(
         children: [
           Positioned(
-            top: -10,
-            left: -8,
-            child: ClipRRect(
-              child: Container(
-                height: 95,
-                child: Transform.rotate(
-                  angle: widget.iconRotationAngle * pi / 180,
-                  child: widget.icon,
-                ),
+            top: widget.iconPositionTop,
+            left: widget.iconPositionLeft,
+            child: Container(
+              height: 95,
+              child: Transform.rotate(
+                angle: widget.iconRotationAngle * pi / 180,
+                child: widget.icon,
               ),
             ),
           ),
           Center(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
+              padding: widget.messagePadding,
               child: Text(
                 widget.message,
                 style: theme.textTheme.bodyText2?.merge(
@@ -111,6 +126,7 @@ class _CustomSnackBarState extends State<CustomSnackBar> {
                 textAlign: TextAlign.center,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 2,
+                textScaleFactor: widget.textScaleFactor,
               ),
             ),
           ),

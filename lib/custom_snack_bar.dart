@@ -9,6 +9,8 @@ class CustomSnackBar extends StatefulWidget {
   final Color backgroundColor;
   final TextStyle textStyle;
   final int iconRotationAngle;
+  final List<BoxShadow> boxShadow;
+  final BorderRadius borderRadius;
   final double iconPositionTop;
   final double iconPositionLeft;
   final EdgeInsetsGeometry messagePadding;
@@ -32,6 +34,8 @@ class CustomSnackBar extends StatefulWidget {
     this.iconPositionTop = -10,
     this.iconPositionLeft = -8,
     this.backgroundColor = const Color(0xff00E676),
+    this.boxShadow = kDefaultBoxShadow,
+    this.borderRadius = kDefaultBorderRadius,
     this.textScaleFactor = 1.0,
   });
 
@@ -53,6 +57,8 @@ class CustomSnackBar extends StatefulWidget {
     this.iconPositionTop = -10,
     this.iconPositionLeft = -8,
     this.backgroundColor = const Color(0xff2196F3),
+    this.boxShadow = kDefaultBoxShadow,
+    this.borderRadius = kDefaultBorderRadius,
     this.textScaleFactor = 1.0,
   });
 
@@ -74,6 +80,8 @@ class CustomSnackBar extends StatefulWidget {
     this.iconPositionTop = -10,
     this.iconPositionLeft = -8,
     this.backgroundColor = const Color(0xffff5252),
+    this.boxShadow = kDefaultBoxShadow,
+    this.borderRadius = kDefaultBorderRadius,
     this.textScaleFactor = 1.0,
   });
 
@@ -90,15 +98,8 @@ class _CustomSnackBarState extends State<CustomSnackBar> {
       height: 80,
       decoration: BoxDecoration(
         color: widget.backgroundColor,
-        borderRadius: BorderRadius.all(Radius.circular(12)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black26,
-            offset: Offset(0.0, 8.0),
-            spreadRadius: 1,
-            blurRadius: 30,
-          ),
-        ],
+        borderRadius: widget.borderRadius,
+        boxShadow: widget.boxShadow,
       ),
       width: double.infinity,
       child: Stack(
@@ -134,3 +135,14 @@ class _CustomSnackBarState extends State<CustomSnackBar> {
     );
   }
 }
+
+const kDefaultBoxShadow = const [
+  BoxShadow(
+    color: Colors.black26,
+    offset: Offset(0.0, 8.0),
+    spreadRadius: 1,
+    blurRadius: 30,
+  ),
+];
+
+const kDefaultBorderRadius = const BorderRadius.all(Radius.circular(12));

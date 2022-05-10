@@ -43,8 +43,10 @@ void showTopSnackBar(
       return TopSnackBar(
         child: child,
         onDismissed: () {
-          overlayEntry.remove();
-          _previousEntry = null;
+          if (overlayEntry.mounted) {
+            overlayEntry.remove();
+            _previousEntry = null;
+          }
         },
         showOutAnimationDuration: showOutAnimationDuration,
         hideOutAnimationDuration: hideOutAnimationDuration,

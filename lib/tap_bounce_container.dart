@@ -29,15 +29,17 @@ class _TapBounceContainerState extends State<TapBounceContainer>
       lowerBound: 0.0,
       upperBound: 0.04,
     )..addListener(() {
-        setState(() {});
+        if (mounted) {
+          setState(() {});
+        }
       });
     super.initState();
   }
 
   @override
   void dispose() {
-    super.dispose();
     _controller.dispose();
+    super.dispose();
   }
 
   @override

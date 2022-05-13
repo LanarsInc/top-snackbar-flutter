@@ -43,8 +43,10 @@ void showTopSnackBar(
       return TopSnackBar(
         child: child,
         onDismissed: () {
-          overlayEntry.remove();
-          _previousEntry = null;
+          if (overlayEntry.mounted && _previousEntry == overlayEntry) {
+            overlayEntry.remove();
+            _previousEntry = null;
+          }
         },
         showOutAnimationDuration: showOutAnimationDuration,
         hideOutAnimationDuration: hideOutAnimationDuration,
@@ -140,7 +142,9 @@ class _TopSnackBarState extends State<TopSnackBar>
         }
 
         if (status == AnimationStatus.dismissed) {
-          widget.onDismissed.call();
+          if (mounted) {
+            widget.onDismissed.call();
+          }
         }
       });
 

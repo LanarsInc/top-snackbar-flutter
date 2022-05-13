@@ -1,3 +1,6 @@
+## 1.0.3 - 13.05.2022
+* Fix bugs
+
 ## 1.0.2 - 11.11.2021
 * Extend layout customisation
 

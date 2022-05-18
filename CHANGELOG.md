@@ -1,12 +1,13 @@
 ## 1.1.0 - 18.05.2022
 * Enhancement [#17](https://github.com/LanarsInc/top-snackbar-flutter/issues/17)
   (Persistent snackbar)
+* Enhancement: Add maxLine parameter to CustomSnackBar by [anisalibegic](https://github.com/anisalibegic)
 
 ## 1.0.3 - 13.05.2022
-* Fix bugs
+* Bugfix
 
 ## 1.0.2 - 11.11.2021
-* Extend layout customisation by [JekaNS](https://github.com/JekaNS) & [benyaminbeyzaie](https://github.com/benyaminbeyzaie)
+* Enhancement: Extend layout customisation by [JekaNS](https://github.com/JekaNS)& [benyaminbeyzaie](https://github.com/benyaminbeyzaie)
 
 ## 1.0.1 - 21.09.2021
 * Dismiss previous snackbar before displaying new one (snackbars don't overlay 

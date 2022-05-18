@@ -194,7 +194,9 @@ class _TopSnackBarState extends State<TopSnackBar>
             onTap: () {
               if (mounted) {
                 widget.onTap?.call();
-                animationController.reverse();
+                if (!widget.persistent) {
+                  animationController.reverse();
+                }
               }
             },
             child: widget.child,

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:top_snackbar_flutter/tap_bounce_container.dart';
 
+typedef ControllerCallback = void Function(AnimationController);
+
 OverlayEntry? _previousEntry;
 
 /// Displays a widget that will be passed to [child] parameter above the current
@@ -24,6 +26,12 @@ OverlayEntry? _previousEntry;
 /// The [overlayState] argument is used to add specific overlay state.
 /// If you will not pass it, it will try to get the current overlay state from
 /// passed [BuildContext]
+///
+/// The [persistent] argument is used to make snack bar persistent, so
+/// [displayDuration] will be ignored. Default is false.
+///
+/// The [onAnimationControllerInit] callback is called on internal
+/// [AnimationController] has been initialized.
 void showTopSnackBar(
   BuildContext context,
   Widget child, {
@@ -35,6 +43,8 @@ void showTopSnackBar(
   OverlayState? overlayState,
   double leftPadding = 16,
   double rightPadding = 16,
+  bool persistent = false,
+  ControllerCallback? onAnimationControllerInit,
 }) async {
   overlayState ??= Overlay.of(context);
   late OverlayEntry overlayEntry;
@@ -55,11 +65,15 @@ void showTopSnackBar(
         onTap: onTap,
         leftPadding: leftPadding,
         rightPadding: rightPadding,
+        persistent: persistent,
+        onAnimationControllerInit: onAnimationControllerInit,
       );
     },
   );
 
-  _previousEntry?.remove();
+  if (_previousEntry != null && _previousEntry!.mounted) {
+    _previousEntry?.remove();
+  }
   overlayState?.insert(overlayEntry);
   _previousEntry = overlayEntry;
 }
@@ -73,8 +87,10 @@ class TopSnackBar extends StatefulWidget {
   final displayDuration;
   final additionalTopPadding;
   final VoidCallback? onTap;
+  final ControllerCallback? onAnimationControllerInit;
   final double leftPadding;
   final double rightPadding;
+  final bool persistent;
 
   TopSnackBar({
     Key? key,
@@ -87,6 +103,8 @@ class TopSnackBar extends StatefulWidget {
     this.onTap,
     this.leftPadding = 16,
     this.rightPadding = 16,
+    this.persistent = false,
+    this.onAnimationControllerInit,
   }) : super(key: key);
 
   @override
@@ -119,6 +137,8 @@ class _TopSnackBarState extends State<TopSnackBar>
       reverseDuration: widget.hideOutAnimationDuration,
     );
 
+    widget.onAnimationControllerInit?.call(animationController);
+
     Tween<Offset> offsetTween = Tween<Offset>(
       begin: Offset(0.0, -1.0),
       end: Offset(0.0, 0.0),
@@ -132,12 +152,9 @@ class _TopSnackBarState extends State<TopSnackBar>
       ),
     )..addStatusListener((status) async {
         if (status == AnimationStatus.completed) {
-          await Future.delayed(widget.displayDuration);
-          if (mounted) {
-            animationController.reverse();
-            setState(() {
-              topPosition = 0;
-            });
+          if (!widget.persistent) {
+            await Future.delayed(widget.displayDuration);
+            _dismiss();
           }
         }
 
@@ -150,6 +167,15 @@ class _TopSnackBarState extends State<TopSnackBar>
 
     if (mounted) {
       animationController.forward();
+    }
+  }
+
+  void _dismiss() {
+    if (mounted) {
+      animationController.reverse();
+      setState(() {
+        topPosition = 0;
+      });
     }
   }
 

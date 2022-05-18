@@ -1,3 +1,7 @@
+## 1.1.0 - 18.05.2022
+* Enhancement [#17](https://github.com/LanarsInc/top-snackbar-flutter/issues/17)
+  (Persistent snackbar)
+
 ## 1.0.3 - 13.05.2022
 * Fix bugs
 

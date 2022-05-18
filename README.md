@@ -43,3 +43,27 @@ showTopSnackBar(
     ),
 );
 ```
+
+# Persistent snackbar
+There is a usage example demo `example/main.dart`
+```dart
+AnimationController localAnimationController;
+TapBounceContainer(
+    onTap: () {
+        showTopSnackBar(
+            context,
+            CustomSnackBar.info(
+              message: "Persistent SnackBar",
+            ),
+            persistent: true,
+            onAnimationControllerInit: (controller) =>
+              localAnimationController = controller,
+        );
+    },
+    child: buildButton(context, "Show persistent SnackBar"),
+),
+TapBounceContainer(
+    onTap: () => localAnimationController.reverse(),
+    child: buildButton(context, "Dismiss"),
+),
+```

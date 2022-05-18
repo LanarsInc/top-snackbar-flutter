@@ -8,6 +8,7 @@ class CustomSnackBar extends StatefulWidget {
   final Widget icon;
   final Color backgroundColor;
   final TextStyle textStyle;
+  final int maxLines;
   final int iconRotationAngle;
   final List<BoxShadow> boxShadow;
   final BorderRadius borderRadius;
@@ -30,6 +31,7 @@ class CustomSnackBar extends StatefulWidget {
       fontSize: 16,
       color: Colors.white,
     ),
+    this.maxLines = 2,
     this.iconRotationAngle = 32,
     this.iconPositionTop = -10,
     this.iconPositionLeft = -8,
@@ -53,6 +55,7 @@ class CustomSnackBar extends StatefulWidget {
       fontSize: 16,
       color: Colors.white,
     ),
+    this.maxLines = 2,
     this.iconRotationAngle = 32,
     this.iconPositionTop = -10,
     this.iconPositionLeft = -8,
@@ -76,6 +79,7 @@ class CustomSnackBar extends StatefulWidget {
       fontSize: 16,
       color: Colors.white,
     ),
+    this.maxLines = 2,
     this.iconRotationAngle = 32,
     this.iconPositionTop = -10,
     this.iconPositionLeft = -8,
@@ -125,7 +129,7 @@ class _CustomSnackBarState extends State<CustomSnackBar> {
                 ),
                 textAlign: TextAlign.center,
                 overflow: TextOverflow.ellipsis,
-                maxLines: 2,
+                maxLines: widget.maxLines,
                 textScaleFactor: widget.textScaleFactor,
               ),
             ),

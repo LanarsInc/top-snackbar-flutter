@@ -10,16 +10,13 @@ OverlayEntry? _previousEntry;
 ///
 /// The [child] argument is used to pass widget that you want to show
 ///
-/// The [showOutAnimationDuration] argument is used to specify duration of
+/// The [animationDuration] argument is used to specify duration of
 /// enter transition
 ///
-/// The [hideOutAnimationDuration] argument is used to specify duration of
+/// The [reverseAnimationDuration] argument is used to specify duration of
 /// exit transition
 ///
 /// The [displayDuration] argument is used to specify duration displaying
-///
-/// The [additionalTopPadding] argument is used to specify amount of top
-/// padding that will be added for SafeArea values
 ///
 /// The [onTap] callback of [TopSnackBar]
 ///
@@ -32,19 +29,24 @@ OverlayEntry? _previousEntry;
 ///
 /// The [onAnimationControllerInit] callback is called on internal
 /// [AnimationController] has been initialized.
+///
+/// The [padding] argument is used to specify amount of outer padding
 void showTopSnackBar(
   BuildContext context,
   Widget child, {
-  Duration showOutAnimationDuration = const Duration(milliseconds: 1200),
-  Duration hideOutAnimationDuration = const Duration(milliseconds: 550),
+  Duration animationDuration = const Duration(milliseconds: 1200),
+  Duration reverseAnimationDuration = const Duration(milliseconds: 550),
   Duration displayDuration = const Duration(milliseconds: 3000),
-  double additionalTopPadding = 16.0,
   VoidCallback? onTap,
   OverlayState? overlayState,
-  double leftPadding = 16,
-  double rightPadding = 16,
   bool persistent = false,
   ControllerCallback? onAnimationControllerInit,
+  EdgeInsets padding = const EdgeInsets.only(
+    left: 16,
+    right: 16,
+    bottom: 0,
+    top: 16,
+  ),
 }) async {
   overlayState ??= Overlay.of(context);
   late OverlayEntry overlayEntry;
@@ -58,15 +60,13 @@ void showTopSnackBar(
             _previousEntry = null;
           }
         },
-        showOutAnimationDuration: showOutAnimationDuration,
-        hideOutAnimationDuration: hideOutAnimationDuration,
+        animationDuration: animationDuration,
+        reverseAnimationDuration: reverseAnimationDuration,
         displayDuration: displayDuration,
-        additionalTopPadding: additionalTopPadding,
         onTap: onTap,
-        leftPadding: leftPadding,
-        rightPadding: rightPadding,
         persistent: persistent,
         onAnimationControllerInit: onAnimationControllerInit,
+        padding: padding,
       );
     },
   );
@@ -82,29 +82,25 @@ void showTopSnackBar(
 class TopSnackBar extends StatefulWidget {
   final Widget child;
   final VoidCallback onDismissed;
-  final showOutAnimationDuration;
-  final hideOutAnimationDuration;
-  final displayDuration;
-  final additionalTopPadding;
+  final Duration animationDuration;
+  final Duration reverseAnimationDuration;
+  final Duration displayDuration;
   final VoidCallback? onTap;
   final ControllerCallback? onAnimationControllerInit;
-  final double leftPadding;
-  final double rightPadding;
   final bool persistent;
+  final EdgeInsets padding;
 
   TopSnackBar({
     Key? key,
     required this.child,
     required this.onDismissed,
-    required this.showOutAnimationDuration,
-    required this.hideOutAnimationDuration,
+    required this.animationDuration,
+    required this.reverseAnimationDuration,
     required this.displayDuration,
-    required this.additionalTopPadding,
     this.onTap,
-    this.leftPadding = 16,
-    this.rightPadding = 16,
     this.persistent = false,
     this.onAnimationControllerInit,
+    required this.padding,
   }) : super(key: key);
 
   @override
@@ -119,7 +115,7 @@ class _TopSnackBarState extends State<TopSnackBar>
 
   @override
   void initState() {
-    topPosition = widget.additionalTopPadding;
+    topPosition = widget.padding.top;
     _setupAndStartAnimation();
     super.initState();
   }
@@ -133,8 +129,8 @@ class _TopSnackBarState extends State<TopSnackBar>
   void _setupAndStartAnimation() async {
     animationController = AnimationController(
       vsync: this,
-      duration: widget.showOutAnimationDuration,
-      reverseDuration: widget.hideOutAnimationDuration,
+      duration: widget.animationDuration,
+      reverseDuration: widget.reverseAnimationDuration,
     );
 
     widget.onAnimationControllerInit?.call(animationController);
@@ -182,11 +178,11 @@ class _TopSnackBarState extends State<TopSnackBar>
   @override
   Widget build(BuildContext context) {
     return AnimatedPositioned(
-      duration: widget.hideOutAnimationDuration * 1.5,
+      duration: widget.reverseAnimationDuration * 1.5,
       curve: Curves.linearToEaseOut,
       top: topPosition,
-      left: widget.leftPadding,
-      right: widget.rightPadding,
+      left: widget.padding.left,
+      right: widget.padding.right,
       child: SlideTransition(
         position: offsetAnimation as Animation<Offset>,
         child: SafeArea(

@@ -31,6 +31,9 @@ OverlayEntry? _previousEntry;
 /// [AnimationController] has been initialized.
 ///
 /// The [padding] argument is used to specify amount of outer padding
+///
+/// [curve] and [reverseCurve] arguments are used to specify curves
+/// for in and out animations respectively
 void showTopSnackBar(
   BuildContext context,
   Widget child, {
@@ -47,6 +50,8 @@ void showTopSnackBar(
     bottom: 0,
     top: 16,
   ),
+  Curve curve = Curves.elasticOut,
+  Curve reverseCurve = Curves.linearToEaseOut,
 }) async {
   overlayState ??= Overlay.of(context);
   late OverlayEntry overlayEntry;
@@ -67,6 +72,8 @@ void showTopSnackBar(
         persistent: persistent,
         onAnimationControllerInit: onAnimationControllerInit,
         padding: padding,
+        curve: curve,
+        reverseCurve: reverseCurve,
       );
     },
   );
@@ -89,6 +96,8 @@ class TopSnackBar extends StatefulWidget {
   final ControllerCallback? onAnimationControllerInit;
   final bool persistent;
   final EdgeInsets padding;
+  final Curve curve;
+  final Curve reverseCurve;
 
   TopSnackBar({
     Key? key,
@@ -101,6 +110,8 @@ class TopSnackBar extends StatefulWidget {
     this.persistent = false,
     this.onAnimationControllerInit,
     required this.padding,
+    required this.curve,
+    required this.reverseCurve,
   }) : super(key: key);
 
   @override
@@ -111,11 +122,9 @@ class _TopSnackBarState extends State<TopSnackBar>
     with SingleTickerProviderStateMixin {
   late Animation offsetAnimation;
   late AnimationController animationController;
-  double? topPosition;
 
   @override
   void initState() {
-    topPosition = widget.padding.top;
     _setupAndStartAnimation();
     super.initState();
   }
@@ -143,8 +152,8 @@ class _TopSnackBarState extends State<TopSnackBar>
     offsetAnimation = offsetTween.animate(
       CurvedAnimation(
         parent: animationController,
-        curve: Curves.elasticOut,
-        reverseCurve: Curves.linearToEaseOut,
+        curve: widget.curve,
+        reverseCurve: widget.reverseCurve,
       ),
     )..addStatusListener((status) async {
         if (status == AnimationStatus.completed) {
@@ -169,18 +178,13 @@ class _TopSnackBarState extends State<TopSnackBar>
   void _dismiss() {
     if (mounted) {
       animationController.reverse();
-      setState(() {
-        topPosition = 0;
-      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedPositioned(
-      duration: widget.reverseAnimationDuration * 1.5,
-      curve: Curves.linearToEaseOut,
-      top: topPosition,
+    return Positioned(
+      top: widget.padding.top,
       left: widget.padding.left,
       right: widget.padding.right,
       child: SlideTransition(

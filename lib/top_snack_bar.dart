@@ -44,12 +44,7 @@ void showTopSnackBar(
   OverlayState? overlayState,
   bool persistent = false,
   ControllerCallback? onAnimationControllerInit,
-  EdgeInsets padding = const EdgeInsets.only(
-    left: 16,
-    right: 16,
-    bottom: 0,
-    top: 16,
-  ),
+  EdgeInsets padding = const EdgeInsets.all(16),
   Curve curve = Curves.elasticOut,
   Curve reverseCurve = Curves.linearToEaseOut,
 }) async {

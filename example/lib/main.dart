@@ -87,6 +87,21 @@ class _MyAppState extends State<MyApp> {
                     onTap: () => localAnimationController.reverse(),
                     child: buildButton(context, "Dismiss persistent SnackBar"),
                   ),
+                  SizedBox(height: 24),
+                  TapBounceContainer(
+                    onTap: () {
+                      showTopSnackBar(
+                        context,
+                        CustomSnackBar.info(message: "Try to swipe me left"),
+                        dismissType: TopSnackBarDismissType.onSwipe,
+                        dismissDirection: DismissDirection.endToStart,
+                      );
+                    },
+                    child: buildButton(
+                      context,
+                      "Show swiped dismissable SnackBar",
+                    ),
+                  ),
                 ],
               ),
             ),

@@ -3,6 +3,8 @@ import 'package:top_snackbar_flutter/tap_bounce_container.dart';
 
 typedef ControllerCallback = void Function(AnimationController);
 
+enum TopSnackBarDismissType { onTap, onSwipe, none }
+
 OverlayEntry? _previousEntry;
 
 /// Displays a widget that will be passed to [child] parameter above the current
@@ -34,6 +36,13 @@ OverlayEntry? _previousEntry;
 ///
 /// [curve] and [reverseCurve] arguments are used to specify curves
 /// for in and out animations respectively
+///
+/// The [dismissType] argument specify which action to trigger to
+/// dismiss the snackbnar. Defaults to `TopSnackBarDismissType.onTap`
+///
+/// The [dismissDirection] argument specify in which direction the snackbar
+/// can be dismissed. This argument is only used when [dismissType] is equal
+/// to `TopSnackBarDismissType.onSwipe`. Defaults to `DismissDirection.up`
 void showTopSnackBar(
   BuildContext context,
   Widget child, {
@@ -47,6 +56,8 @@ void showTopSnackBar(
   EdgeInsets padding = const EdgeInsets.all(16),
   Curve curve = Curves.elasticOut,
   Curve reverseCurve = Curves.linearToEaseOut,
+  TopSnackBarDismissType dismissType = TopSnackBarDismissType.onTap,
+  DismissDirection dismissDirection = DismissDirection.up,
 }) async {
   overlayState ??= Overlay.of(context);
   late OverlayEntry overlayEntry;
@@ -69,6 +80,8 @@ void showTopSnackBar(
         padding: padding,
         curve: curve,
         reverseCurve: reverseCurve,
+        dismissType: dismissType,
+        dismissDirection: dismissDirection,
       );
     },
   );
@@ -93,6 +106,8 @@ class TopSnackBar extends StatefulWidget {
   final EdgeInsets padding;
   final Curve curve;
   final Curve reverseCurve;
+  final TopSnackBarDismissType dismissType;
+  final DismissDirection dismissDirection;
 
   TopSnackBar({
     Key? key,
@@ -107,6 +122,8 @@ class TopSnackBar extends StatefulWidget {
     required this.padding,
     required this.curve,
     required this.reverseCurve,
+    this.dismissType = TopSnackBarDismissType.onTap,
+    this.dismissDirection = DismissDirection.up,
   }) : super(key: key);
 
   @override
@@ -184,20 +201,39 @@ class _TopSnackBarState extends State<TopSnackBar>
       right: widget.padding.right,
       child: SlideTransition(
         position: offsetAnimation as Animation<Offset>,
-        child: SafeArea(
-          child: TapBounceContainer(
-            onTap: () {
-              if (mounted) {
-                widget.onTap?.call();
-                if (!widget.persistent) {
-                  animationController.reverse();
-                }
-              }
-            },
-            child: widget.child,
-          ),
-        ),
+        child: SafeArea(child: _buildDismissableChild()),
       ),
     );
+  }
+
+  /// Build different type of [Widget] depending on [TopSnackBarDismissType] value
+  Widget _buildDismissableChild() {
+    switch (widget.dismissType) {
+      case TopSnackBarDismissType.onTap:
+        return TapBounceContainer(
+          onTap: () {
+            if (mounted) {
+              widget.onTap?.call();
+              if (!widget.persistent) {
+                animationController.reverse();
+              }
+            }
+          },
+          child: widget.child,
+        );
+      case TopSnackBarDismissType.onSwipe:
+        return Dismissible(
+          direction: widget.dismissDirection,
+          key: Key('top_snack_bar_${widget.child.hashCode}'),
+          onDismissed: (direction) {
+            if (!widget.persistent) {
+              _dismiss();
+            }
+          },
+          child: widget.child,
+        );
+      case TopSnackBarDismissType.none:
+        return widget.child;
+    }
   }
 }

@@ -34,6 +34,9 @@ OverlayEntry? _previousEntry;
 ///
 /// [curve] and [reverseCurve] arguments are used to specify curves
 /// for in and out animations respectively
+///
+/// The [enableSafeArea] argument is used to specify the `top` argument of the
+/// [SafeArea] widget that wrap the snackbar. Defaults to `true`.
 void showTopSnackBar(
   BuildContext context,
   Widget child, {
@@ -47,6 +50,7 @@ void showTopSnackBar(
   EdgeInsets padding = const EdgeInsets.all(16),
   Curve curve = Curves.elasticOut,
   Curve reverseCurve = Curves.linearToEaseOut,
+  bool enableSafeArea = true,
 }) async {
   overlayState ??= Overlay.of(context);
   late OverlayEntry overlayEntry;
@@ -69,6 +73,7 @@ void showTopSnackBar(
         padding: padding,
         curve: curve,
         reverseCurve: reverseCurve,
+        enableSafeArea: enableSafeArea,
       );
     },
   );
@@ -93,6 +98,7 @@ class TopSnackBar extends StatefulWidget {
   final EdgeInsets padding;
   final Curve curve;
   final Curve reverseCurve;
+  final bool enableSafeArea;
 
   TopSnackBar({
     Key? key,
@@ -107,6 +113,7 @@ class TopSnackBar extends StatefulWidget {
     required this.padding,
     required this.curve,
     required this.reverseCurve,
+    this.enableSafeArea = true,
   }) : super(key: key);
 
   @override
@@ -185,6 +192,7 @@ class _TopSnackBarState extends State<TopSnackBar>
       child: SlideTransition(
         position: offsetAnimation as Animation<Offset>,
         child: SafeArea(
+          top: widget.enableSafeArea,
           child: TapBounceContainer(
             onTap: () {
               if (mounted) {

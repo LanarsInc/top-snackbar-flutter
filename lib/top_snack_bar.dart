@@ -211,9 +211,9 @@ class _TopSnackBarState extends State<TopSnackBar>
         position: offsetAnimation as Animation<Offset>,
         child: SafeArea(
           top: widget.safeAreaValues.top,
-          bottom: widget.safeAreaValues.top,
-          left: widget.safeAreaValues.top,
-          right: widget.safeAreaValues.top,
+          bottom: widget.safeAreaValues.bottom,
+          left: widget.safeAreaValues.left,
+          right: widget.safeAreaValues.right,
           minimum: widget.safeAreaValues.minimum,
           maintainBottomViewPadding:
               widget.safeAreaValues.maintainBottomViewPadding,

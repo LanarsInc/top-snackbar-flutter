@@ -19,7 +19,7 @@
 * Bugfix
 
 ## 1.0.2 - 11.11.2021
-* Enhancement: Extend layout customisation by [JekaNS](https://github.com/JekaNS)& [benyaminbeyzaie](https://github.com/benyaminbeyzaie)
+* Enhancement: Extend layout customisation by [JekaNS](https://github.com/JekaNS) & [benyaminbeyzaie](https://github.com/benyaminbeyzaie)
 
 ## 1.0.1 - 21.09.2021
 * Dismiss previous snackbar before displaying new one (snackbars don't overlay 

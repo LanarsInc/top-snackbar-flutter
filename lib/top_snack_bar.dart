@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:top_snackbar_flutter/safe_area_values.dart';
 import 'package:top_snackbar_flutter/tap_bounce_container.dart';
 
 typedef ControllerCallback = void Function(AnimationController);
@@ -34,6 +35,9 @@ OverlayEntry? _previousEntry;
 ///
 /// [curve] and [reverseCurve] arguments are used to specify curves
 /// for in and out animations respectively
+///
+/// The [safeAreaValues] argument is used to specify the arguments of the
+/// [SafeArea] widget that wrap the snackbar.
 void showTopSnackBar(
   BuildContext context,
   Widget child, {
@@ -47,6 +51,7 @@ void showTopSnackBar(
   EdgeInsets padding = const EdgeInsets.all(16),
   Curve curve = Curves.elasticOut,
   Curve reverseCurve = Curves.linearToEaseOut,
+  SafeAreaValues safeAreaValues = const SafeAreaValues(),
 }) async {
   overlayState ??= Overlay.of(context);
   late OverlayEntry overlayEntry;
@@ -69,6 +74,7 @@ void showTopSnackBar(
         padding: padding,
         curve: curve,
         reverseCurve: reverseCurve,
+        safeAreaValues: safeAreaValues,
       );
     },
   );
@@ -93,6 +99,7 @@ class TopSnackBar extends StatefulWidget {
   final EdgeInsets padding;
   final Curve curve;
   final Curve reverseCurve;
+  final SafeAreaValues safeAreaValues;
 
   TopSnackBar({
     Key? key,
@@ -107,6 +114,7 @@ class TopSnackBar extends StatefulWidget {
     required this.padding,
     required this.curve,
     required this.reverseCurve,
+    required this.safeAreaValues,
   }) : super(key: key);
 
   @override
@@ -185,6 +193,13 @@ class _TopSnackBarState extends State<TopSnackBar>
       child: SlideTransition(
         position: offsetAnimation as Animation<Offset>,
         child: SafeArea(
+          top: widget.safeAreaValues.top,
+          bottom: widget.safeAreaValues.top,
+          left: widget.safeAreaValues.top,
+          right: widget.safeAreaValues.top,
+          minimum: widget.safeAreaValues.minimum,
+          maintainBottomViewPadding:
+              widget.safeAreaValues.maintainBottomViewPadding,
           child: TapBounceContainer(
             onTap: () {
               if (mounted) {

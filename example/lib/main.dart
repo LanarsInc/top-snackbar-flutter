@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/tap_bounce_container.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 void main() {
   runApp(MyApp());
@@ -13,6 +13,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  AnimationController localAnimationController;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -64,6 +66,26 @@ class _MyAppState extends State<MyApp> {
                       );
                     },
                     child: buildButton(context, "Show error"),
+                  ),
+                  SizedBox(height: 48),
+                  TapBounceContainer(
+                    onTap: () {
+                      showTopSnackBar(
+                        context,
+                        CustomSnackBar.info(
+                          message: "Persistent SnackBar",
+                        ),
+                        persistent: true,
+                        onAnimationControllerInit: (controller) =>
+                            localAnimationController = controller,
+                      );
+                    },
+                    child: buildButton(context, "Show persistent SnackBar"),
+                  ),
+                  SizedBox(height: 24),
+                  TapBounceContainer(
+                    onTap: () => localAnimationController.reverse(),
+                    child: buildButton(context, "Dismiss persistent SnackBar"),
                   ),
                 ],
               ),

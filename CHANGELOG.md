@@ -1,18 +1,48 @@
+## 2.0.0 - 21.06.2022
+* **Breaking change**. Padding parameters replaced with a single EdgeInsets `padding` parameter.
+* **Breaking change**. `showOutAnimationDuration` renamed to `animationDuration`, `hideOutAnimationDuration` renamed to `reverseAnimationDuration`.
+* Enhancement [#24](https://github.com/vizhan-lanars/top-snackbar-flutter/issues/24). Add `curve` and `reverseCurve` parameters.
+
+## 1.1.1 - 18.05.2022
+* Fix persistent snackbar behaviour
+
+## 1.1.0 - 18.05.2022
+* Enhancement [#17](https://github.com/LanarsInc/top-snackbar-flutter/issues/17)
+  (Persistent snackbar)
+* Enhancement: Add maxLine parameter to CustomSnackBar by [anisalibegic](https://github.com/anisalibegic)
+
+## 1.0.3 - 13.05.2022
+* Bugfix
+
+## 1.0.2 - 11.11.2021
+* Enhancement: Extend layout customisation by [JekaNS](https://github.com/JekaNS)& [benyaminbeyzaie](https://github.com/benyaminbeyzaie)
+
+## 1.0.1 - 21.09.2021
+* Dismiss previous snackbar before displaying new one (snackbars don't overlay 
+  each other now).
+* Enhancement [#1](https://github.com/LanarsInc/top-snackbar-flutter/issues/1)
+* Enhancement [#6](https://github.com/LanarsInc/top-snackbar-flutter/issues/6)
+
+## 1.0.0 - 11.03.2021
+
+* Clean up code
+
 ## 0.0.4 - 10.03.2021
 
-- Migrate to null safety
-- Provide `onTap` callback for `showTopSnackBar` function
+* Migrate to null safety
+* Provide `onTap` callback for `showTopSnackBar` function
 
 ## 0.0.3 - 5.12.2020
 
-- Add additional param in order to specify overlayState at `showTopSnackBar` function
+* Add additional param in order to specify overlayState at `showTopSnackBar` 
+  function
 
 ## 0.0.2 - 2.12.2020
 
-- Provide some documentation
-- Change pubspec.yaml
-- Update Readme.md
+* Provide some documentation
+* Change pubspec.yaml
+* Update Readme.md
 
 ## 0.0.1 - 30.11.2020
 
-- Initial Open Source release.
+* Initial Open Source release.

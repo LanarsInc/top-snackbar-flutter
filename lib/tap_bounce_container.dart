@@ -14,7 +14,8 @@ class TapBounceContainer extends StatefulWidget {
   _TapBounceContainerState createState() => _TapBounceContainerState();
 }
 
-class _TapBounceContainerState extends State<TapBounceContainer> with SingleTickerProviderStateMixin {
+class _TapBounceContainerState extends State<TapBounceContainer>
+    with SingleTickerProviderStateMixin {
   late double _scale;
   late AnimationController _controller;
 
@@ -28,15 +29,17 @@ class _TapBounceContainerState extends State<TapBounceContainer> with SingleTick
       lowerBound: 0.0,
       upperBound: 0.04,
     )..addListener(() {
-        setState(() {});
+        if (mounted) {
+          setState(() {});
+        }
       });
     super.initState();
   }
 
   @override
   void dispose() {
-    super.dispose();
     _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -55,7 +58,9 @@ class _TapBounceContainerState extends State<TapBounceContainer> with SingleTick
   }
 
   void _onTapDown(TapDownDetails details) {
-    _controller.forward();
+    if (mounted) {
+      _controller.forward();
+    }
   }
 
   void _onTapUp(TapUpDetails details) async {
@@ -67,8 +72,10 @@ class _TapBounceContainerState extends State<TapBounceContainer> with SingleTick
   }
 
   Future _closeSnackBar() async {
-    _controller.reverse();
-    await Future.delayed(animationDuration);
-    widget.onTap?.call();
+    if (mounted) {
+      _controller.reverse();
+      await Future.delayed(animationDuration);
+      widget.onTap?.call();
+    }
   }
 }

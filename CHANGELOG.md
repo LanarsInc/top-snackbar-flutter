@@ -1,3 +1,8 @@
+## 2.0.0 - 21.06.2022
+* **Breaking change**. Padding parameters replaced with a single EdgeInsets `padding` parameter.
+* **Breaking change**. `showOutAnimationDuration` renamed to `animationDuration`, `hideOutAnimationDuration` renamed to `reverseAnimationDuration`.
+* Enhancement [#24](https://github.com/vizhan-lanars/top-snackbar-flutter/issues/24). Add `curve` and `reverseCurve` parameters.
+
 ## 1.1.1 - 18.05.2022
 * Fix persistent snackbar behaviour
 

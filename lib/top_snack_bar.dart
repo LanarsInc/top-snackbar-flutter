@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:top_snackbar_flutter/safe_area_values.dart';
 import 'package:top_snackbar_flutter/tap_bounce_container.dart';
 
 typedef ControllerCallback = void Function(AnimationController);
+
+enum DismissType { onTap, onSwipe, none }
 
 OverlayEntry? _previousEntry;
 
@@ -34,6 +37,16 @@ OverlayEntry? _previousEntry;
 ///
 /// [curve] and [reverseCurve] arguments are used to specify curves
 /// for in and out animations respectively
+///
+/// The [safeAreaValues] argument is used to specify the arguments of the
+/// [SafeArea] widget that wrap the snackbar.
+///
+/// The [dismissType] argument specify which action to trigger to
+/// dismiss the snackbar. Defaults to `TopSnackBarDismissType.onTap`
+///
+/// The [dismissDirection] argument specify in which direction the snackbar
+/// can be dismissed. This argument is only used when [dismissType] is equal
+/// to `DismissType.onSwipe`. Defaults to `DismissDirection.up`
 void showTopSnackBar(
   BuildContext context,
   Widget child, {
@@ -47,6 +60,9 @@ void showTopSnackBar(
   EdgeInsets padding = const EdgeInsets.all(16),
   Curve curve = Curves.elasticOut,
   Curve reverseCurve = Curves.linearToEaseOut,
+  SafeAreaValues safeAreaValues = const SafeAreaValues(),
+  DismissType dismissType = DismissType.onTap,
+  DismissDirection dismissDirection = DismissDirection.up,
 }) async {
   overlayState ??= Overlay.of(context);
   late OverlayEntry overlayEntry;
@@ -69,6 +85,9 @@ void showTopSnackBar(
         padding: padding,
         curve: curve,
         reverseCurve: reverseCurve,
+        safeAreaValues: safeAreaValues,
+        dismissType: dismissType,
+        dismissDirection: dismissDirection,
       );
     },
   );
@@ -93,6 +112,9 @@ class TopSnackBar extends StatefulWidget {
   final EdgeInsets padding;
   final Curve curve;
   final Curve reverseCurve;
+  final SafeAreaValues safeAreaValues;
+  final DismissType dismissType;
+  final DismissDirection dismissDirection;
 
   TopSnackBar({
     Key? key,
@@ -107,6 +129,9 @@ class TopSnackBar extends StatefulWidget {
     required this.padding,
     required this.curve,
     required this.reverseCurve,
+    required this.safeAreaValues,
+    this.dismissType = DismissType.onTap,
+    this.dismissDirection = DismissDirection.up,
   }) : super(key: key);
 
   @override
@@ -152,10 +177,8 @@ class _TopSnackBarState extends State<TopSnackBar>
       ),
     )..addStatusListener((status) async {
         if (status == AnimationStatus.completed) {
-          if (!widget.persistent) {
-            await Future.delayed(widget.displayDuration);
-            _dismiss();
-          }
+          await Future.delayed(widget.displayDuration);
+          _dismiss();
         }
 
         if (status == AnimationStatus.dismissed) {
@@ -171,7 +194,7 @@ class _TopSnackBarState extends State<TopSnackBar>
   }
 
   void _dismiss() {
-    if (mounted) {
+    if (!widget.persistent && mounted) {
       animationController.reverse();
     }
   }
@@ -185,19 +208,41 @@ class _TopSnackBarState extends State<TopSnackBar>
       child: SlideTransition(
         position: offsetAnimation as Animation<Offset>,
         child: SafeArea(
-          child: TapBounceContainer(
-            onTap: () {
-              if (mounted) {
-                widget.onTap?.call();
-                if (!widget.persistent) {
-                  animationController.reverse();
-                }
-              }
-            },
-            child: widget.child,
-          ),
+          top: widget.safeAreaValues.top,
+          bottom: widget.safeAreaValues.bottom,
+          left: widget.safeAreaValues.left,
+          right: widget.safeAreaValues.right,
+          minimum: widget.safeAreaValues.minimum,
+          maintainBottomViewPadding:
+              widget.safeAreaValues.maintainBottomViewPadding,
+          child: _buildDismissibleChild(),
         ),
       ),
     );
+  }
+
+  /// Build different type of [Widget] depending on [DismissType] value
+  Widget _buildDismissibleChild() {
+    switch (widget.dismissType) {
+      case DismissType.onTap:
+        return TapBounceContainer(
+          onTap: () {
+            if (mounted) {
+              widget.onTap?.call();
+              _dismiss();
+            }
+          },
+          child: widget.child,
+        );
+      case DismissType.onSwipe:
+        return Dismissible(
+          direction: widget.dismissDirection,
+          key: Key('top_snack_bar_${widget.child.hashCode}'),
+          onDismissed: (direction) => _dismiss(),
+          child: widget.child,
+        );
+      case DismissType.none:
+        return widget.child;
+    }
   }
 }

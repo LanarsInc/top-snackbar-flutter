@@ -1,3 +1,7 @@
+## 2.1.0 - 04.07.2022
+* Enhancement: Add `safeAreaValues` parameter by [LeGoffMael](https://github.com/LeGoffMael)
+* Enhancement: Make `top_snackbar_flutter` dismissible by swipe with parameters `dismissType` and `dismissDirection` by [LeGoffMael](https://github.com/LeGoffMael)
+
 ## 2.0.0 - 21.06.2022
 * **Breaking change**. Padding parameters replaced with a single EdgeInsets `padding` parameter.
 * **Breaking change**. `showOutAnimationDuration` renamed to `animationDuration`, `hideOutAnimationDuration` renamed to `reverseAnimationDuration`.
@@ -15,7 +19,7 @@
 * Bugfix
 
 ## 1.0.2 - 11.11.2021
-* Enhancement: Extend layout customisation by [JekaNS](https://github.com/JekaNS)& [benyaminbeyzaie](https://github.com/benyaminbeyzaie)
+* Enhancement: Extend layout customisation by [JekaNS](https://github.com/JekaNS) & [benyaminbeyzaie](https://github.com/benyaminbeyzaie)
 
 ## 1.0.1 - 21.09.2021
 * Dismiss previous snackbar before displaying new one (snackbars don't overlay 

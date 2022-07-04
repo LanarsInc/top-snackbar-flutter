@@ -93,7 +93,7 @@ class _MyAppState extends State<MyApp> {
                       showTopSnackBar(
                         context,
                         CustomSnackBar.info(message: "Try to swipe me left"),
-                        dismissType: TopSnackBarDismissibleType.onSwipe,
+                        dismissType: DismissType.onSwipe,
                         dismissDirection: DismissDirection.endToStart,
                       );
                     },

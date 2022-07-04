@@ -1,3 +1,7 @@
+## 2.1.0 - 04.07.2022
+* Enhancement: Add `safeAreaValues` parameter by [LeGoffMael](https://github.com/LeGoffMael)
+* Enhancement: Make `top_snackbar_flutter` dismissible by swipe with parameters `dismissType` and `dismissDirection` by [LeGoffMael](https://github.com/LeGoffMael)
+
 ## 2.0.0 - 21.06.2022
 * **Breaking change**. Padding parameters replaced with a single EdgeInsets `padding` parameter.
 * **Breaking change**. `showOutAnimationDuration` renamed to `animationDuration`, `hideOutAnimationDuration` renamed to `reverseAnimationDuration`.

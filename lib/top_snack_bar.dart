@@ -4,6 +4,8 @@ import 'package:top_snackbar_flutter/tap_bounce_container.dart';
 
 typedef ControllerCallback = void Function(AnimationController);
 
+enum TopSnackBarDismissibleType { onTap, onSwipe, none }
+
 OverlayEntry? _previousEntry;
 
 /// Displays a widget that will be passed to [child] parameter above the current
@@ -38,6 +40,13 @@ OverlayEntry? _previousEntry;
 ///
 /// The [safeAreaValues] argument is used to specify the arguments of the
 /// [SafeArea] widget that wrap the snackbar.
+///
+/// The [dismissType] argument specify which action to trigger to
+/// dismiss the snackbar. Defaults to `TopSnackBarDismissType.onTap`
+///
+/// The [dismissDirection] argument specify in which direction the snackbar
+/// can be dismissed. This argument is only used when [dismissType] is equal
+/// to `TopSnackBarDismissType.onSwipe`. Defaults to `DismissDirection.up`
 void showTopSnackBar(
   BuildContext context,
   Widget child, {
@@ -52,6 +61,8 @@ void showTopSnackBar(
   Curve curve = Curves.elasticOut,
   Curve reverseCurve = Curves.linearToEaseOut,
   SafeAreaValues safeAreaValues = const SafeAreaValues(),
+  TopSnackBarDismissibleType dismissType = TopSnackBarDismissibleType.onTap,
+  DismissDirection dismissDirection = DismissDirection.up,
 }) async {
   overlayState ??= Overlay.of(context);
   late OverlayEntry overlayEntry;
@@ -75,6 +86,8 @@ void showTopSnackBar(
         curve: curve,
         reverseCurve: reverseCurve,
         safeAreaValues: safeAreaValues,
+        dismissType: dismissType,
+        dismissDirection: dismissDirection,
       );
     },
   );
@@ -100,6 +113,8 @@ class TopSnackBar extends StatefulWidget {
   final Curve curve;
   final Curve reverseCurve;
   final SafeAreaValues safeAreaValues;
+  final TopSnackBarDismissibleType dismissType;
+  final DismissDirection dismissDirection;
 
   TopSnackBar({
     Key? key,
@@ -115,6 +130,8 @@ class TopSnackBar extends StatefulWidget {
     required this.curve,
     required this.reverseCurve,
     required this.safeAreaValues,
+    this.dismissType = TopSnackBarDismissibleType.onTap,
+    this.dismissDirection = DismissDirection.up,
   }) : super(key: key);
 
   @override
@@ -200,19 +217,40 @@ class _TopSnackBarState extends State<TopSnackBar>
           minimum: widget.safeAreaValues.minimum,
           maintainBottomViewPadding:
               widget.safeAreaValues.maintainBottomViewPadding,
-          child: TapBounceContainer(
-            onTap: () {
-              if (mounted) {
-                widget.onTap?.call();
-                if (!widget.persistent) {
-                  animationController.reverse();
-                }
-              }
-            },
-            child: widget.child,
-          ),
+          child: _buildDismissibleChild(),
         ),
       ),
     );
+  }
+
+  /// Build different type of [Widget] depending on [TopSnackBarDismissibleType] value
+  Widget _buildDismissibleChild() {
+    switch (widget.dismissType) {
+      case TopSnackBarDismissibleType.onTap:
+        return TapBounceContainer(
+          onTap: () {
+            if (mounted) {
+              widget.onTap?.call();
+              if (!widget.persistent) {
+                animationController.reverse();
+              }
+            }
+          },
+          child: widget.child,
+        );
+      case TopSnackBarDismissibleType.onSwipe:
+        return Dismissible(
+          direction: widget.dismissDirection,
+          key: Key('top_snack_bar_${widget.child.hashCode}'),
+          onDismissed: (direction) {
+            if (!widget.persistent) {
+              _dismiss();
+            }
+          },
+          child: widget.child,
+        );
+      case TopSnackBarDismissibleType.none:
+        return widget.child;
+    }
   }
 }

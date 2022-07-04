@@ -47,6 +47,7 @@ void showTopSnackBar(
   EdgeInsets padding = const EdgeInsets.all(16),
   Curve curve = Curves.elasticOut,
   Curve reverseCurve = Curves.linearToEaseOut,
+  bool enableTopSafeArea = true,
 }) async {
   overlayState ??= Overlay.of(context);
   late OverlayEntry overlayEntry;
@@ -69,6 +70,7 @@ void showTopSnackBar(
         padding: padding,
         curve: curve,
         reverseCurve: reverseCurve,
+        enableTopSafeArea: enableTopSafeArea,
       );
     },
   );
@@ -93,6 +95,7 @@ class TopSnackBar extends StatefulWidget {
   final EdgeInsets padding;
   final Curve curve;
   final Curve reverseCurve;
+  final bool enableTopSafeArea;
 
   TopSnackBar({
     Key? key,
@@ -107,6 +110,7 @@ class TopSnackBar extends StatefulWidget {
     required this.padding,
     required this.curve,
     required this.reverseCurve,
+    required this.enableTopSafeArea,
   }) : super(key: key);
 
   @override
@@ -185,6 +189,7 @@ class _TopSnackBarState extends State<TopSnackBar>
       child: SlideTransition(
         position: offsetAnimation as Animation<Offset>,
         child: SafeArea(
+          top: widget.enableTopSafeArea,
           child: TapBounceContainer(
             onTap: () {
               if (mounted) {

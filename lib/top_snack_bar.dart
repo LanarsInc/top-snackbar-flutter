@@ -238,9 +238,7 @@ class _TopSnackBarState extends State<TopSnackBar>
         return Dismissible(
           direction: widget.dismissDirection,
           key: Key('top_snack_bar_${widget.child.hashCode}'),
-          onDismissed: (direction) {
-            _dismiss();
-          },
+          onDismissed: (direction) => _dismiss(),
           child: widget.child,
         );
       case DismissType.none:

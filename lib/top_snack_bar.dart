@@ -177,10 +177,8 @@ class _TopSnackBarState extends State<TopSnackBar>
       ),
     )..addStatusListener((status) async {
         if (status == AnimationStatus.completed) {
-          if (!widget.persistent) {
-            await Future.delayed(widget.displayDuration);
-            _dismiss();
-          }
+          await Future.delayed(widget.displayDuration);
+          _dismiss();
         }
 
         if (status == AnimationStatus.dismissed) {
@@ -196,7 +194,7 @@ class _TopSnackBarState extends State<TopSnackBar>
   }
 
   void _dismiss() {
-    if (mounted) {
+    if (!widget.persistent && mounted) {
       animationController.reverse();
     }
   }
@@ -231,9 +229,7 @@ class _TopSnackBarState extends State<TopSnackBar>
           onTap: () {
             if (mounted) {
               widget.onTap?.call();
-              if (!widget.persistent) {
-                animationController.reverse();
-              }
+              _dismiss();
             }
           },
           child: widget.child,
@@ -243,9 +239,7 @@ class _TopSnackBarState extends State<TopSnackBar>
           direction: widget.dismissDirection,
           key: Key('top_snack_bar_${widget.child.hashCode}'),
           onDismissed: (direction) {
-            if (!widget.persistent) {
-              _dismiss();
-            }
+            _dismiss();
           },
           child: widget.child,
         );

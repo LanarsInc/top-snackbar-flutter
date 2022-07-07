@@ -1,3 +1,5 @@
+## 2.1.1 - 07.07.2022
+* Fix dismissible widget dismissed error
 ## 2.1.0 - 04.07.2022
 * Enhancement: Add `safeAreaValues` parameter by [LeGoffMael](https://github.com/LeGoffMael)
 * Enhancement: Make `top_snackbar_flutter` dismissible by swipe with parameters `dismissType` and `dismissDirection` by [LeGoffMael](https://github.com/LeGoffMael)

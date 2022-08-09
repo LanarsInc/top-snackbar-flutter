@@ -46,7 +46,7 @@ OverlayEntry? _previousEntry;
 ///
 /// The [dismissDirection] argument specify in which direction the snackbar
 /// can be dismissed. This argument is only used when [dismissType] is equal
-/// to `DismissType.onSwipe`. Defaults to `DismissDirection.up`
+/// to `DismissType.onSwipe`. Defaults to `[DismissDirection.up]`
 void showTopSnackBar(
   BuildContext context,
   Widget child, {
@@ -62,7 +62,9 @@ void showTopSnackBar(
   Curve reverseCurve = Curves.linearToEaseOut,
   SafeAreaValues safeAreaValues = const SafeAreaValues(),
   DismissType dismissType = DismissType.onTap,
-  DismissDirection dismissDirection = DismissDirection.up,
+  List<DismissDirection> dismissDirections = const [
+    DismissDirection.up,
+  ],
 }) async {
   overlayState ??= Overlay.of(context);
   late OverlayEntry overlayEntry;
@@ -87,7 +89,7 @@ void showTopSnackBar(
         reverseCurve: reverseCurve,
         safeAreaValues: safeAreaValues,
         dismissType: dismissType,
-        dismissDirection: dismissDirection,
+        dismissDirections: dismissDirections,
       );
     },
   );
@@ -114,7 +116,7 @@ class TopSnackBar extends StatefulWidget {
   final Curve reverseCurve;
   final SafeAreaValues safeAreaValues;
   final DismissType dismissType;
-  final DismissDirection dismissDirection;
+  final List<DismissDirection> dismissDirections;
 
   TopSnackBar({
     Key? key,
@@ -131,7 +133,9 @@ class TopSnackBar extends StatefulWidget {
     required this.reverseCurve,
     required this.safeAreaValues,
     this.dismissType = DismissType.onTap,
-    this.dismissDirection = DismissDirection.up,
+    this.dismissDirections = const [
+      DismissDirection.up,
+    ],
   }) : super(key: key);
 
   @override
@@ -235,12 +239,16 @@ class _TopSnackBarState extends State<TopSnackBar>
           child: widget.child,
         );
       case DismissType.onSwipe:
-        return Dismissible(
-          direction: widget.dismissDirection,
-          key: UniqueKey(),
-          onDismissed: (direction) => _dismiss(),
-          child: widget.child,
-        );
+        Widget childWidget = widget.child;
+        for (final direction in widget.dismissDirections) {
+          childWidget = Dismissible(
+            direction: direction,
+            key: UniqueKey(),
+            onDismissed: (direction) => _dismiss(),
+            child: childWidget,
+          );
+        }
+        return childWidget;
       case DismissType.none:
         return widget.child;
     }

@@ -94,12 +94,31 @@ class _MyAppState extends State<MyApp> {
                         context,
                         CustomSnackBar.info(message: "Try to swipe me left"),
                         dismissType: DismissType.onSwipe,
-                        dismissDirection: DismissDirection.endToStart,
+                        dismissDirections: [DismissDirection.endToStart],
                       );
                     },
                     child: buildButton(
                       context,
                       "Show swiped dismissible SnackBar",
+                    ),
+                  ),
+                  SizedBox(height: 24),
+                  TapBounceContainer(
+                    onTap: () {
+                      showTopSnackBar(
+                        context,
+                        CustomSnackBar.info(
+                            message: "Try to swipe me up or horizontal"),
+                        dismissType: DismissType.onSwipe,
+                        dismissDirections: [
+                          DismissDirection.up,
+                          DismissDirection.horizontal
+                        ],
+                      );
+                    },
+                    child: buildButton(
+                      context,
+                      "Show multi direction swiped dismissible",
                     ),
                   ),
                 ],

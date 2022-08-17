@@ -195,7 +195,7 @@ class _TopSnackBarState extends State<TopSnackBar>
 
   void _dismiss() {
     if (!widget.persistent && mounted) {
-      animationController.reverse();
+      animationController.reset();
     }
   }
 
@@ -238,7 +238,11 @@ class _TopSnackBarState extends State<TopSnackBar>
         return Dismissible(
           direction: widget.dismissDirection,
           key: UniqueKey(),
-          onDismissed: (direction) => _dismiss(),
+          onDismissed: (direction) {
+            if (mounted) {
+              _dismiss();
+            }
+          },
           child: widget.child,
         );
       case DismissType.none:

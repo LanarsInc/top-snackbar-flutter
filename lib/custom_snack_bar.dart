@@ -16,6 +16,7 @@ class CustomSnackBar extends StatefulWidget {
   final double iconPositionLeft;
   final EdgeInsetsGeometry messagePadding;
   final double textScaleFactor;
+  final TextAlign textAlign;
 
   const CustomSnackBar.success({
     Key? key,
@@ -39,6 +40,7 @@ class CustomSnackBar extends StatefulWidget {
     this.boxShadow = kDefaultBoxShadow,
     this.borderRadius = kDefaultBorderRadius,
     this.textScaleFactor = 1.0,
+    this.textAlign = TextAlign.center,
   });
 
   const CustomSnackBar.info({
@@ -63,6 +65,7 @@ class CustomSnackBar extends StatefulWidget {
     this.boxShadow = kDefaultBoxShadow,
     this.borderRadius = kDefaultBorderRadius,
     this.textScaleFactor = 1.0,
+    this.textAlign = TextAlign.center,
   });
 
   const CustomSnackBar.error({
@@ -87,6 +90,7 @@ class CustomSnackBar extends StatefulWidget {
     this.boxShadow = kDefaultBoxShadow,
     this.borderRadius = kDefaultBorderRadius,
     this.textScaleFactor = 1.0,
+    this.textAlign = TextAlign.center,
   });
 
   @override
@@ -127,7 +131,7 @@ class _CustomSnackBarState extends State<CustomSnackBar> {
                 style: theme.textTheme.bodyText2?.merge(
                   widget.textStyle,
                 ),
-                textAlign: TextAlign.center,
+                textAlign: widget.textAlign,
                 overflow: TextOverflow.ellipsis,
                 maxLines: widget.maxLines,
                 textScaleFactor: widget.textScaleFactor,

@@ -238,11 +238,7 @@ class _TopSnackBarState extends State<TopSnackBar>
         return Dismissible(
           direction: widget.dismissDirection,
           key: UniqueKey(),
-          onDismissed: (direction) {
-            if (mounted) {
-              _dismiss();
-            }
-          },
+          onDismissed: (direction) => _dismiss(),
           child: widget.child,
         );
       case DismissType.none:

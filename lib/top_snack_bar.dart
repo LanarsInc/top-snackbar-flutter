@@ -6,8 +6,6 @@ typedef ControllerCallback = void Function(AnimationController);
 
 enum DismissType { onTap, onSwipe, none }
 
-OverlayEntry? _previousEntry;
-
 /// Displays a widget that will be passed to [child] parameter above the current
 /// contents of the app, with transition animation
 ///
@@ -71,9 +69,8 @@ void showTopSnackBar(
       return TopSnackBar(
         child: child,
         onDismissed: () {
-          if (overlayEntry.mounted && _previousEntry == overlayEntry) {
+          if (overlayEntry.mounted) {
             overlayEntry.remove();
-            _previousEntry = null;
           }
         },
         animationDuration: animationDuration,
@@ -92,11 +89,7 @@ void showTopSnackBar(
     },
   );
 
-  if (_previousEntry != null && _previousEntry!.mounted) {
-    _previousEntry?.remove();
-  }
   overlayState?.insert(overlayEntry);
-  _previousEntry = overlayEntry;
 }
 
 /// Widget that controls all animations
@@ -177,8 +170,7 @@ class _TopSnackBarState extends State<TopSnackBar>
       ),
     )..addStatusListener((status) async {
         if (status == AnimationStatus.completed) {
-          await Future.delayed(widget.displayDuration);
-          _dismiss();
+          Future.delayed(widget.displayDuration, _reverse);
         }
 
         if (status == AnimationStatus.dismissed) {
@@ -193,7 +185,7 @@ class _TopSnackBarState extends State<TopSnackBar>
     }
   }
 
-  void _dismiss() {
+  void _reverse() {
     if (!widget.persistent && mounted) {
       animationController.reverse();
     }
@@ -229,7 +221,7 @@ class _TopSnackBarState extends State<TopSnackBar>
           onTap: () {
             if (mounted) {
               widget.onTap?.call();
-              _dismiss();
+              _reverse();
             }
           },
           child: widget.child,
@@ -238,7 +230,7 @@ class _TopSnackBarState extends State<TopSnackBar>
         return Dismissible(
           direction: widget.dismissDirection,
           key: UniqueKey(),
-          onDismissed: (direction) => _dismiss(),
+          onDismissed: (direction) => widget.onDismissed.call(),
           child: widget.child,
         );
       case DismissType.none:

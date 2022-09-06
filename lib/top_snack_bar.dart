@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:top_snackbar_flutter/safe_area_values.dart';
 import 'package:top_snackbar_flutter/tap_bounce_container.dart';
@@ -135,6 +137,7 @@ class _TopSnackBarState extends State<TopSnackBar>
     with SingleTickerProviderStateMixin {
   late Animation offsetAnimation;
   late AnimationController animationController;
+  Timer? timer;
 
   @override
   void initState() {
@@ -145,6 +148,7 @@ class _TopSnackBarState extends State<TopSnackBar>
   @override
   void dispose() {
     animationController.dispose();
+    timer?.cancel();
     super.dispose();
   }
 
@@ -170,7 +174,7 @@ class _TopSnackBarState extends State<TopSnackBar>
       ),
     )..addStatusListener((status) async {
         if (status == AnimationStatus.completed) {
-          Future.delayed(widget.displayDuration, _reverse);
+          timer = Timer(widget.displayDuration, _reverse);
         }
 
         if (status == AnimationStatus.dismissed) {

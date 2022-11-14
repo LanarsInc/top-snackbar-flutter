@@ -1,32 +1,34 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 
 /// Widget for nice tap effect. It decrease widget scale while tapping
 class TapBounceContainer extends StatefulWidget {
+  const TapBounceContainer({
+    Key? key,
+    required this.child,
+    this.onTap,
+  }) : super(key: key);
+
   final Widget child;
   final VoidCallback? onTap;
 
-  TapBounceContainer({
-    required this.child,
-    this.onTap,
-  });
-
   @override
-  _TapBounceContainerState createState() => _TapBounceContainerState();
+  TapBounceContainerState createState() => TapBounceContainerState();
 }
 
-class _TapBounceContainerState extends State<TapBounceContainer>
+class TapBounceContainerState extends State<TapBounceContainer>
     with SingleTickerProviderStateMixin {
   late double _scale;
   late AnimationController _controller;
 
-  final animationDuration = Duration(milliseconds: 200);
+  final animationDuration = const Duration(milliseconds: 200);
 
   @override
   void initState() {
     _controller = AnimationController(
       vsync: this,
       duration: animationDuration,
-      lowerBound: 0.0,
       upperBound: 0.04,
     )..addListener(() {
         if (mounted) {
@@ -63,17 +65,17 @@ class _TapBounceContainerState extends State<TapBounceContainer>
     }
   }
 
-  void _onTapUp(TapUpDetails details) async {
+  Future<void> _onTapUp(TapUpDetails details) async {
     await _closeSnackBar();
   }
 
-  void _onPanEnd(DragEndDetails details) async {
+  Future<void> _onPanEnd(DragEndDetails details) async {
     await _closeSnackBar();
   }
 
-  Future _closeSnackBar() async {
+  Future<void> _closeSnackBar() async {
     if (mounted) {
-      _controller.reverse();
+      unawaited(_controller.reverse());
       await Future.delayed(animationDuration);
       widget.onTap?.call();
     }

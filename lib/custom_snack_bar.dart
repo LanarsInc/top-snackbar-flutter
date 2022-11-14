@@ -4,26 +4,13 @@ import 'package:flutter/material.dart';
 
 /// Popup widget that you can use by default to show some information
 class CustomSnackBar extends StatefulWidget {
-  final String message;
-  final Widget icon;
-  final Color backgroundColor;
-  final TextStyle textStyle;
-  final int maxLines;
-  final int iconRotationAngle;
-  final List<BoxShadow> boxShadow;
-  final BorderRadius borderRadius;
-  final double iconPositionTop;
-  final double iconPositionLeft;
-  final EdgeInsetsGeometry messagePadding;
-  final double textScaleFactor;
-
   const CustomSnackBar.success({
     Key? key,
     required this.message,
     this.messagePadding = const EdgeInsets.symmetric(horizontal: 24),
     this.icon = const Icon(
       Icons.sentiment_very_satisfied,
-      color: const Color(0x15000000),
+      color: Color(0x15000000),
       size: 120,
     ),
     this.textStyle = const TextStyle(
@@ -39,7 +26,7 @@ class CustomSnackBar extends StatefulWidget {
     this.boxShadow = kDefaultBoxShadow,
     this.borderRadius = kDefaultBorderRadius,
     this.textScaleFactor = 1.0,
-  });
+  }) : super(key: key);
 
   const CustomSnackBar.info({
     Key? key,
@@ -47,7 +34,7 @@ class CustomSnackBar extends StatefulWidget {
     this.messagePadding = const EdgeInsets.symmetric(horizontal: 24),
     this.icon = const Icon(
       Icons.sentiment_neutral,
-      color: const Color(0x15000000),
+      color: Color(0x15000000),
       size: 120,
     ),
     this.textStyle = const TextStyle(
@@ -63,7 +50,7 @@ class CustomSnackBar extends StatefulWidget {
     this.boxShadow = kDefaultBoxShadow,
     this.borderRadius = kDefaultBorderRadius,
     this.textScaleFactor = 1.0,
-  });
+  }) : super(key: key);
 
   const CustomSnackBar.error({
     Key? key,
@@ -71,7 +58,7 @@ class CustomSnackBar extends StatefulWidget {
     this.messagePadding = const EdgeInsets.symmetric(horizontal: 24),
     this.icon = const Icon(
       Icons.error_outline,
-      color: const Color(0x15000000),
+      color: Color(0x15000000),
       size: 120,
     ),
     this.textStyle = const TextStyle(
@@ -89,11 +76,24 @@ class CustomSnackBar extends StatefulWidget {
     this.textScaleFactor = 1.0,
   });
 
+  final String message;
+  final Widget icon;
+  final Color backgroundColor;
+  final TextStyle textStyle;
+  final int maxLines;
+  final int iconRotationAngle;
+  final List<BoxShadow> boxShadow;
+  final BorderRadius borderRadius;
+  final double iconPositionTop;
+  final double iconPositionLeft;
+  final EdgeInsetsGeometry messagePadding;
+  final double textScaleFactor;
+
   @override
-  _CustomSnackBarState createState() => _CustomSnackBarState();
+  CustomSnackBarState createState() => CustomSnackBarState();
 }
 
-class _CustomSnackBarState extends State<CustomSnackBar> {
+class CustomSnackBarState extends State<CustomSnackBar> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -111,7 +111,7 @@ class _CustomSnackBarState extends State<CustomSnackBar> {
           Positioned(
             top: widget.iconPositionTop,
             left: widget.iconPositionLeft,
-            child: Container(
+            child: SizedBox(
               height: 95,
               child: Transform.rotate(
                 angle: widget.iconRotationAngle * pi / 180,
@@ -140,13 +140,13 @@ class _CustomSnackBarState extends State<CustomSnackBar> {
   }
 }
 
-const kDefaultBoxShadow = const [
+const kDefaultBoxShadow = [
   BoxShadow(
     color: Colors.black26,
-    offset: Offset(0.0, 8.0),
+    offset: Offset(0, 8),
     spreadRadius: 1,
     blurRadius: 30,
   ),
 ];
 
-const kDefaultBorderRadius = const BorderRadius.all(Radius.circular(12));
+const kDefaultBorderRadius = BorderRadius.all(Radius.circular(12));

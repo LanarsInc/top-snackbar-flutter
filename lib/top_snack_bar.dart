@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:top_snackbar_flutter/safe_area_values.dart';
 import 'package:top_snackbar_flutter/tap_bounce_container.dart';
@@ -8,6 +10,9 @@ enum DismissType { onTap, onSwipe, none }
 
 OverlayEntry? _previousEntry;
 
+/// The [overlayState] argument is used to add specific overlay state.
+/// If you are sure that there is a overlay state in your [BuildContext],
+/// You can get it [Overlay.of(BuildContext)]
 /// Displays a widget that will be passed to [child] parameter above the current
 /// contents of the app, with transition animation
 ///
@@ -21,11 +26,7 @@ OverlayEntry? _previousEntry;
 ///
 /// The [displayDuration] argument is used to specify duration displaying
 ///
-/// The [onTap] callback of [TopSnackBar]
-///
-/// The [overlayState] argument is used to add specific overlay state.
-/// If you will not pass it, it will try to get the current overlay state from
-/// passed [BuildContext]
+/// The [onTap] callback of [_TopSnackBar]
 ///
 /// The [persistent] argument is used to make snack bar persistent, so
 /// [displayDuration] will be ignored. Default is false.
@@ -46,15 +47,14 @@ OverlayEntry? _previousEntry;
 ///
 /// The [dismissDirection] argument specify in which direction the snackbar
 /// can be dismissed. This argument is only used when [dismissType] is equal
-/// to `DismissType.onSwipe`. Defaults to `DismissDirection.up`
+/// to `DismissType.onSwipe`. Defaults to `[DismissDirection.up]`
 void showTopSnackBar(
-  BuildContext context,
+  OverlayState overlayState,
   Widget child, {
   Duration animationDuration = const Duration(milliseconds: 1200),
   Duration reverseAnimationDuration = const Duration(milliseconds: 550),
   Duration displayDuration = const Duration(milliseconds: 3000),
   VoidCallback? onTap,
-  OverlayState? overlayState,
   bool persistent = false,
   ControllerCallback? onAnimationControllerInit,
   EdgeInsets padding = const EdgeInsets.all(16),
@@ -62,19 +62,15 @@ void showTopSnackBar(
   Curve reverseCurve = Curves.linearToEaseOut,
   SafeAreaValues safeAreaValues = const SafeAreaValues(),
   DismissType dismissType = DismissType.onTap,
-  DismissDirection dismissDirection = DismissDirection.up,
-}) async {
-  overlayState ??= Overlay.of(context);
-  late OverlayEntry overlayEntry;
-  overlayEntry = OverlayEntry(
-    builder: (context) {
-      return TopSnackBar(
-        child: child,
+  List<DismissDirection> dismissDirection = const [DismissDirection.up],
+}) {
+  late OverlayEntry _overlayEntry;
+  _overlayEntry = OverlayEntry(
+    builder: (_) {
+      return _TopSnackBar(
         onDismissed: () {
-          if (overlayEntry.mounted && _previousEntry == overlayEntry) {
-            overlayEntry.remove();
-            _previousEntry = null;
-          }
+          _overlayEntry.remove();
+          _previousEntry = null;
         },
         animationDuration: animationDuration,
         reverseAnimationDuration: reverseAnimationDuration,
@@ -87,7 +83,8 @@ void showTopSnackBar(
         reverseCurve: reverseCurve,
         safeAreaValues: safeAreaValues,
         dismissType: dismissType,
-        dismissDirection: dismissDirection,
+        dismissDirections: dismissDirection,
+        child: child,
       );
     },
   );
@@ -95,12 +92,31 @@ void showTopSnackBar(
   if (_previousEntry != null && _previousEntry!.mounted) {
     _previousEntry?.remove();
   }
-  overlayState?.insert(overlayEntry);
-  _previousEntry = overlayEntry;
+
+  overlayState.insert(_overlayEntry);
+  _previousEntry = _overlayEntry;
 }
 
 /// Widget that controls all animations
-class TopSnackBar extends StatefulWidget {
+class _TopSnackBar extends StatefulWidget {
+  const _TopSnackBar({
+    Key? key,
+    required this.child,
+    required this.onDismissed,
+    required this.animationDuration,
+    required this.reverseAnimationDuration,
+    required this.displayDuration,
+    required this.padding,
+    required this.curve,
+    required this.reverseCurve,
+    required this.safeAreaValues,
+    required this.dismissDirections,
+    this.onTap,
+    this.persistent = false,
+    this.onAnimationControllerInit,
+    this.dismissType = DismissType.onTap,
+  }) : super(key: key);
+
   final Widget child;
   final VoidCallback onDismissed;
   final Duration animationDuration;
@@ -114,89 +130,64 @@ class TopSnackBar extends StatefulWidget {
   final Curve reverseCurve;
   final SafeAreaValues safeAreaValues;
   final DismissType dismissType;
-  final DismissDirection dismissDirection;
-
-  TopSnackBar({
-    Key? key,
-    required this.child,
-    required this.onDismissed,
-    required this.animationDuration,
-    required this.reverseAnimationDuration,
-    required this.displayDuration,
-    this.onTap,
-    this.persistent = false,
-    this.onAnimationControllerInit,
-    required this.padding,
-    required this.curve,
-    required this.reverseCurve,
-    required this.safeAreaValues,
-    this.dismissType = DismissType.onTap,
-    this.dismissDirection = DismissDirection.up,
-  }) : super(key: key);
+  final List<DismissDirection> dismissDirections;
 
   @override
   _TopSnackBarState createState() => _TopSnackBarState();
 }
 
-class _TopSnackBarState extends State<TopSnackBar>
+class _TopSnackBarState extends State<_TopSnackBar>
     with SingleTickerProviderStateMixin {
-  late Animation offsetAnimation;
-  late AnimationController animationController;
+  late final Animation<Offset> _offsetAnimation;
+  late final AnimationController _animationController;
+
+  Timer? _timer;
+
+  final _offsetTween = Tween(begin: const Offset(0, -1), end: Offset.zero);
 
   @override
   void initState() {
-    _setupAndStartAnimation();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: widget.animationDuration,
+      reverseDuration: widget.reverseAnimationDuration,
+    );
+    _animationController.addStatusListener(
+      (status) {
+        if (status == AnimationStatus.completed && !widget.persistent) {
+          _timer = Timer(widget.displayDuration, () {
+            if (mounted) {
+              _animationController.reverse();
+            }
+          });
+        }
+        if (status == AnimationStatus.dismissed) {
+          _timer?.cancel();
+          widget.onDismissed.call();
+        }
+      },
+    );
+
+    widget.onAnimationControllerInit?.call(_animationController);
+
+    _offsetAnimation = _offsetTween.animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: widget.curve,
+        reverseCurve: widget.reverseCurve,
+      ),
+    );
+    if (mounted) {
+      _animationController.forward();
+    }
     super.initState();
   }
 
   @override
   void dispose() {
-    animationController.dispose();
+    _animationController.dispose();
+    _timer?.cancel();
     super.dispose();
-  }
-
-  void _setupAndStartAnimation() async {
-    animationController = AnimationController(
-      vsync: this,
-      duration: widget.animationDuration,
-      reverseDuration: widget.reverseAnimationDuration,
-    );
-
-    widget.onAnimationControllerInit?.call(animationController);
-
-    Tween<Offset> offsetTween = Tween<Offset>(
-      begin: Offset(0.0, -1.0),
-      end: Offset(0.0, 0.0),
-    );
-
-    offsetAnimation = offsetTween.animate(
-      CurvedAnimation(
-        parent: animationController,
-        curve: widget.curve,
-        reverseCurve: widget.reverseCurve,
-      ),
-    )..addStatusListener((status) async {
-        if (status == AnimationStatus.completed) {
-          await Future.delayed(widget.displayDuration);
-          _dismiss();
-        }
-
-        if (status == AnimationStatus.dismissed) {
-          if (mounted) {
-            widget.onDismissed.call();
-          }
-        }
-      });
-
-    if (mounted) {
-      animationController.forward();
-    }
-  }
-
-  void _dismiss() {
-    if (!widget.persistent && mounted) {
-      animationController.reverse();
-    }
   }
 
   @override
@@ -206,7 +197,7 @@ class _TopSnackBarState extends State<TopSnackBar>
       left: widget.padding.left,
       right: widget.padding.right,
       child: SlideTransition(
-        position: offsetAnimation as Animation<Offset>,
+        position: _offsetAnimation,
         child: SafeArea(
           top: widget.safeAreaValues.top,
           bottom: widget.safeAreaValues.bottom,
@@ -227,20 +218,34 @@ class _TopSnackBarState extends State<TopSnackBar>
       case DismissType.onTap:
         return TapBounceContainer(
           onTap: () {
-            if (mounted) {
-              widget.onTap?.call();
-              _dismiss();
+            widget.onTap?.call();
+            if (!widget.persistent && mounted) {
+              _animationController.reverse();
             }
           },
           child: widget.child,
         );
       case DismissType.onSwipe:
-        return Dismissible(
-          direction: widget.dismissDirection,
-          key: UniqueKey(),
-          onDismissed: (direction) => _dismiss(),
-          child: widget.child,
-        );
+        var childWidget = widget.child;
+        for (final direction in widget.dismissDirections) {
+          childWidget = Dismissible(
+            direction: direction,
+            key: UniqueKey(),
+            dismissThresholds: const {DismissDirection.up: 0.2},
+            confirmDismiss: (direction) async {
+              if (!widget.persistent && mounted) {
+                if (direction == DismissDirection.down) {
+                  await _animationController.reverse();
+                } else {
+                  _animationController.reset();
+                }
+              }
+              return false;
+            },
+            child: childWidget,
+          );
+        }
+        return childWidget;
       case DismissType.none:
         return widget.child;
     }

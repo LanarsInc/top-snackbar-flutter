@@ -32,11 +32,11 @@ class MyAppState extends State<MyApp> {
                   TapBounceContainer(
                     onTap: () {
                       showTopSnackBar(
+                        Overlay.of(context),
                         const CustomSnackBar.info(
                           message:
                               'There is some information. You need to do something with that',
                         ),
-                        overlayState: Overlay.of(context),
                       );
                     },
                     child: buildButton(context, 'Show info'),
@@ -45,11 +45,11 @@ class MyAppState extends State<MyApp> {
                   TapBounceContainer(
                     onTap: () {
                       showTopSnackBar(
+                        Overlay.of(context),
                         const CustomSnackBar.success(
                           message:
                               'Good job, your release is successful. Have a nice day',
                         ),
-                        overlayState: Overlay.of(context),
                       );
                     },
                     child: buildButton(context, 'Show success'),
@@ -58,11 +58,11 @@ class MyAppState extends State<MyApp> {
                   TapBounceContainer(
                     onTap: () {
                       showTopSnackBar(
+                        Overlay.of(context),
                         const CustomSnackBar.error(
                           message:
                               'Something went wrong. Please check your credentials and try again',
                         ),
-                        overlayState: Overlay.of(context),
                       );
                     },
                     child: buildButton(context, 'Show error'),
@@ -71,11 +71,11 @@ class MyAppState extends State<MyApp> {
                   TapBounceContainer(
                     onTap: () {
                       showTopSnackBar(
+                        Overlay.of(context),
                         const CustomSnackBar.info(
                           message: 'Persistent SnackBar',
                         ),
                         persistent: true,
-                        overlayState: Overlay.of(context),
                         onAnimationControllerInit: (controller) {
                           localAnimationController = controller;
                         },
@@ -92,12 +92,12 @@ class MyAppState extends State<MyApp> {
                   TapBounceContainer(
                     onTap: () {
                       showTopSnackBar(
+                        Overlay.of(context),
                         const CustomSnackBar.info(
                           message: 'Try to swipe me left',
                         ),
                         dismissType: DismissType.onSwipe,
                         dismissDirection: [DismissDirection.endToStart],
-                        overlayState: Overlay.of(context),
                       );
                     },
                     child: buildButton(

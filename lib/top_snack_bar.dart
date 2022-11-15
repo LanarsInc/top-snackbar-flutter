@@ -10,6 +10,9 @@ enum DismissType { onTap, onSwipe, none }
 
 OverlayEntry? _previousEntry;
 
+/// The [overlayState] argument is used to add specific overlay state.
+/// If you are sure that there is a overlay state in your [BuildContext],
+/// You can get it [Overlay.of(BuildContext)]
 /// Displays a widget that will be passed to [child] parameter above the current
 /// contents of the app, with transition animation
 ///
@@ -24,10 +27,6 @@ OverlayEntry? _previousEntry;
 /// The [displayDuration] argument is used to specify duration displaying
 ///
 /// The [onTap] callback of [_TopSnackBar]
-///
-/// The [overlayState] required argument is used to add specific overlay state.
-/// If you are sure that there is a overlay state in your [BuildContext],
-/// You can get it [Overlay.of(BuildContext)]
 ///
 /// The [persistent] argument is used to make snack bar persistent, so
 /// [displayDuration] will be ignored. Default is false.
@@ -50,8 +49,8 @@ OverlayEntry? _previousEntry;
 /// can be dismissed. This argument is only used when [dismissType] is equal
 /// to `DismissType.onSwipe`. Defaults to `[DismissDirection.up]`
 void showTopSnackBar(
+  OverlayState overlayState,
   Widget child, {
-  required OverlayState overlayState,
   Duration animationDuration = const Duration(milliseconds: 1200),
   Duration reverseAnimationDuration = const Duration(milliseconds: 550),
   Duration displayDuration = const Duration(milliseconds: 3000),
@@ -139,7 +138,7 @@ class _TopSnackBar extends StatefulWidget {
 
 class _TopSnackBarState extends State<_TopSnackBar>
     with SingleTickerProviderStateMixin {
-  late Animation<Offset> _offsetAnimation;
+  late final Animation<Offset> _offsetAnimation;
   late final AnimationController _animationController;
 
   Timer? _timer;

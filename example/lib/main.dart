@@ -4,23 +4,23 @@ import 'package:top_snackbar_flutter/tap_bounce_container.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({Key key}) : super(key: key);
+
   @override
-  _MyAppState createState() => _MyAppState();
+  MyAppState createState() => MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class MyAppState extends State<MyApp> {
   AnimationController localAnimationController;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        primaryColor: Colors.orangeAccent,
-      ),
+      theme: ThemeData(primaryColor: Colors.orangeAccent),
       home: Builder(
         builder: (BuildContext context) {
           return Scaffold(
@@ -32,74 +32,77 @@ class _MyAppState extends State<MyApp> {
                   TapBounceContainer(
                     onTap: () {
                       showTopSnackBar(
-                        context,
-                        CustomSnackBar.info(
+                        const CustomSnackBar.info(
                           message:
-                              "There is some information. You need to do something with that",
+                              'There is some information. You need to do something with that',
                         ),
+                        overlayState: Overlay.of(context),
                       );
                     },
-                    child: buildButton(context, "Show info"),
+                    child: buildButton(context, 'Show info'),
                   ),
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
                   TapBounceContainer(
                     onTap: () {
                       showTopSnackBar(
-                        context,
-                        CustomSnackBar.success(
+                        const CustomSnackBar.success(
                           message:
-                              "Good job, your release is successful. Have a nice day",
+                              'Good job, your release is successful. Have a nice day',
                         ),
+                        overlayState: Overlay.of(context),
                       );
                     },
-                    child: buildButton(context, "Show success"),
+                    child: buildButton(context, 'Show success'),
                   ),
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
                   TapBounceContainer(
                     onTap: () {
                       showTopSnackBar(
-                        context,
-                        CustomSnackBar.error(
+                        const CustomSnackBar.error(
                           message:
-                              "Something went wrong. Please check your credentials and try again",
+                              'Something went wrong. Please check your credentials and try again',
                         ),
+                        overlayState: Overlay.of(context),
                       );
                     },
-                    child: buildButton(context, "Show error"),
+                    child: buildButton(context, 'Show error'),
                   ),
-                  SizedBox(height: 48),
+                  const SizedBox(height: 48),
                   TapBounceContainer(
                     onTap: () {
                       showTopSnackBar(
-                        context,
-                        CustomSnackBar.info(
-                          message: "Persistent SnackBar",
+                        const CustomSnackBar.info(
+                          message: 'Persistent SnackBar',
                         ),
                         persistent: true,
-                        onAnimationControllerInit: (controller) =>
-                            localAnimationController = controller,
+                        overlayState: Overlay.of(context),
+                        onAnimationControllerInit: (controller) {
+                          localAnimationController = controller;
+                        },
                       );
                     },
-                    child: buildButton(context, "Show persistent SnackBar"),
+                    child: buildButton(context, 'Show persistent SnackBar'),
                   ),
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
                   TapBounceContainer(
                     onTap: () => localAnimationController.reverse(),
-                    child: buildButton(context, "Dismiss persistent SnackBar"),
+                    child: buildButton(context, 'Dismiss persistent SnackBar'),
                   ),
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
                   TapBounceContainer(
                     onTap: () {
                       showTopSnackBar(
-                        context,
-                        CustomSnackBar.info(message: "Try to swipe me left"),
+                        const CustomSnackBar.info(
+                          message: 'Try to swipe me left',
+                        ),
                         dismissType: DismissType.onSwipe,
-                        dismissDirection: DismissDirection.endToStart,
+                        dismissDirection: [DismissDirection.endToStart],
+                        overlayState: Overlay.of(context),
                       );
                     },
                     child: buildButton(
                       context,
-                      "Show swiped dismissible SnackBar",
+                      'Show swiped dismissible SnackBar',
                     ),
                   ),
                 ],
@@ -121,7 +124,7 @@ class _MyAppState extends State<MyApp> {
             color: Colors.grey.withOpacity(0.4),
             spreadRadius: 6,
             blurRadius: 10,
-            offset: Offset(0, 3),
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -130,7 +133,7 @@ class _MyAppState extends State<MyApp> {
         child: Center(
           child: Text(
             text,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 16,
               fontWeight: FontWeight.w600,

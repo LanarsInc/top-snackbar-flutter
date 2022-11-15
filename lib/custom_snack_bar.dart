@@ -26,6 +26,7 @@ class CustomSnackBar extends StatefulWidget {
     this.boxShadow = kDefaultBoxShadow,
     this.borderRadius = kDefaultBorderRadius,
     this.textScaleFactor = 1.0,
+    this.textAlign = TextAlign.center,
   }) : super(key: key);
 
   const CustomSnackBar.info({
@@ -50,6 +51,7 @@ class CustomSnackBar extends StatefulWidget {
     this.boxShadow = kDefaultBoxShadow,
     this.borderRadius = kDefaultBorderRadius,
     this.textScaleFactor = 1.0,
+    this.textAlign = TextAlign.center,
   }) : super(key: key);
 
   const CustomSnackBar.error({
@@ -74,7 +76,8 @@ class CustomSnackBar extends StatefulWidget {
     this.boxShadow = kDefaultBoxShadow,
     this.borderRadius = kDefaultBorderRadius,
     this.textScaleFactor = 1.0,
-  });
+    this.textAlign = TextAlign.center,
+  }) : super(key: key);
 
   final String message;
   final Widget icon;
@@ -88,6 +91,7 @@ class CustomSnackBar extends StatefulWidget {
   final double iconPositionLeft;
   final EdgeInsetsGeometry messagePadding;
   final double textScaleFactor;
+  final TextAlign textAlign;
 
   @override
   CustomSnackBarState createState() => CustomSnackBarState();
@@ -124,10 +128,8 @@ class CustomSnackBarState extends State<CustomSnackBar> {
               padding: widget.messagePadding,
               child: Text(
                 widget.message,
-                style: theme.textTheme.bodyText2?.merge(
-                  widget.textStyle,
-                ),
-                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyText2?.merge(widget.textStyle),
+                textAlign: widget.textAlign,
                 overflow: TextOverflow.ellipsis,
                 maxLines: widget.maxLines,
                 textScaleFactor: widget.textScaleFactor,

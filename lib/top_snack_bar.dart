@@ -46,7 +46,7 @@ OverlayEntry? _previousEntry;
 /// The [dismissType] argument specify which action to trigger to
 /// dismiss the snackbar. Defaults to `TopSnackBarDismissType.onTap`
 ///
-/// The [dismissDirections] argument specify in which direction the snackbar
+/// The [dismissDirection] argument specify in which direction the snackbar
 /// can be dismissed. This argument is only used when [dismissType] is equal
 /// to `DismissType.onSwipe`. Defaults to `[DismissDirection.up]`
 void showTopSnackBar(
@@ -63,7 +63,7 @@ void showTopSnackBar(
   Curve reverseCurve = Curves.linearToEaseOut,
   SafeAreaValues safeAreaValues = const SafeAreaValues(),
   DismissType dismissType = DismissType.onTap,
-  List<DismissDirection> dismissDirections = const [DismissDirection.up],
+  List<DismissDirection> dismissDirection = const [DismissDirection.up],
 }) {
   late OverlayEntry _overlayEntry;
   _overlayEntry = OverlayEntry(
@@ -84,7 +84,7 @@ void showTopSnackBar(
         reverseCurve: reverseCurve,
         safeAreaValues: safeAreaValues,
         dismissType: dismissType,
-        dismissDirections: dismissDirections,
+        dismissDirections: dismissDirection,
         child: child,
       );
     },

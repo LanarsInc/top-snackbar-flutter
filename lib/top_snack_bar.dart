@@ -25,9 +25,9 @@ OverlayEntry? _previousEntry;
 ///
 /// The [onTap] callback of [_TopSnackBar]
 ///
-/// The [overlayState] argument is used to add specific overlay state.
-/// If you will not pass it, it will try to get the current overlay state from
-/// passed [BuildContext]
+/// The [overlayState] required argument is used to add specific overlay state.
+/// If you are sure that there is a overlay state in your [BuildContext],
+/// You can get it [Overlay.of(BuildContext)]
 ///
 /// The [persistent] argument is used to make snack bar persistent, so
 /// [displayDuration] will be ignored. Default is false.
@@ -50,13 +50,12 @@ OverlayEntry? _previousEntry;
 /// can be dismissed. This argument is only used when [dismissType] is equal
 /// to `DismissType.onSwipe`. Defaults to `[DismissDirection.up]`
 void showTopSnackBar(
-  BuildContext context,
   Widget child, {
+  required OverlayState overlayState,
   Duration animationDuration = const Duration(milliseconds: 1200),
   Duration reverseAnimationDuration = const Duration(milliseconds: 550),
   Duration displayDuration = const Duration(milliseconds: 3000),
   VoidCallback? onTap,
-  OverlayState? overlayState,
   bool persistent = false,
   ControllerCallback? onAnimationControllerInit,
   EdgeInsets padding = const EdgeInsets.all(16),
@@ -66,10 +65,7 @@ void showTopSnackBar(
   DismissType dismissType = DismissType.onTap,
   List<DismissDirection> dismissDirections = const [DismissDirection.up],
 }) {
-  final _overlay = overlayState ?? Overlay.of(context);
-
   late OverlayEntry _overlayEntry;
-
   _overlayEntry = OverlayEntry(
     builder: (_) {
       return _TopSnackBar(
@@ -98,7 +94,7 @@ void showTopSnackBar(
     _previousEntry?.remove();
   }
 
-  _overlay?.insert(_overlayEntry);
+  overlayState.insert(_overlayEntry);
   _previousEntry = _overlayEntry;
 }
 

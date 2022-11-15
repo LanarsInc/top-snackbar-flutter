@@ -46,9 +46,9 @@ OverlayEntry? _previousEntry;
 /// The [dismissType] argument specify which action to trigger to
 /// dismiss the snackbar. Defaults to `TopSnackBarDismissType.onTap`
 ///
-/// The [dismissDirection] argument specify in which direction the snackbar
+/// The [dismissDirections] argument specify in which direction the snackbar
 /// can be dismissed. This argument is only used when [dismissType] is equal
-/// to `DismissType.onSwipe`. Defaults to `DismissDirection.up`
+/// to `DismissType.onSwipe`. Defaults to `[DismissDirection.up]`
 void showTopSnackBar(
   BuildContext context,
   Widget child, {
@@ -64,17 +64,18 @@ void showTopSnackBar(
   Curve reverseCurve = Curves.linearToEaseOut,
   SafeAreaValues safeAreaValues = const SafeAreaValues(),
   DismissType dismissType = DismissType.onTap,
-  DismissDirection dismissDirection = DismissDirection.up,
+  List<DismissDirection> dismissDirections = const [DismissDirection.up],
 }) {
-  final overlay = overlayState ?? Overlay.of(context);
+  final _overlay = overlayState ?? Overlay.of(context);
 
-  late OverlayEntry overlayEntry;
+  late OverlayEntry _overlayEntry;
 
-  overlayEntry = OverlayEntry(
+  _overlayEntry = OverlayEntry(
     builder: (_) {
       return _TopSnackBar(
         onDismissed: () {
-          overlayEntry.remove();
+          _overlayEntry.remove();
+          _previousEntry = null;
         },
         animationDuration: animationDuration,
         reverseAnimationDuration: reverseAnimationDuration,
@@ -87,7 +88,7 @@ void showTopSnackBar(
         reverseCurve: reverseCurve,
         safeAreaValues: safeAreaValues,
         dismissType: dismissType,
-        dismissDirection: dismissDirection,
+        dismissDirections: dismissDirections,
         child: child,
       );
     },
@@ -97,8 +98,8 @@ void showTopSnackBar(
     _previousEntry?.remove();
   }
 
-  overlay?.insert(overlayEntry);
-  _previousEntry = overlayEntry;
+  _overlay?.insert(_overlayEntry);
+  _previousEntry = _overlayEntry;
 }
 
 /// Widget that controls all animations
@@ -114,12 +115,13 @@ class _TopSnackBar extends StatefulWidget {
     required this.curve,
     required this.reverseCurve,
     required this.safeAreaValues,
+    required this.dismissDirections,
     this.onTap,
     this.persistent = false,
     this.onAnimationControllerInit,
     this.dismissType = DismissType.onTap,
-    this.dismissDirection = DismissDirection.up,
   }) : super(key: key);
+
   final Widget child;
   final VoidCallback onDismissed;
   final Duration animationDuration;
@@ -133,7 +135,7 @@ class _TopSnackBar extends StatefulWidget {
   final Curve reverseCurve;
   final SafeAreaValues safeAreaValues;
   final DismissType dismissType;
-  final DismissDirection dismissDirection;
+  final List<DismissDirection> dismissDirections;
 
   @override
   _TopSnackBarState createState() => _TopSnackBarState();
@@ -141,12 +143,12 @@ class _TopSnackBar extends StatefulWidget {
 
 class _TopSnackBarState extends State<_TopSnackBar>
     with SingleTickerProviderStateMixin {
-  late final Animation<Offset> _offsetAnimation;
+  late Animation<Offset> _offsetAnimation;
   late final AnimationController _animationController;
 
   Timer? _timer;
 
-  final offsetTween = Tween(begin: const Offset(0, -1), end: Offset.zero);
+  final _offsetTween = Tween(begin: const Offset(0, -1), end: Offset.zero);
 
   @override
   void initState() {
@@ -173,7 +175,7 @@ class _TopSnackBarState extends State<_TopSnackBar>
 
     widget.onAnimationControllerInit?.call(_animationController);
 
-    _offsetAnimation = offsetTween.animate(
+    _offsetAnimation = _offsetTween.animate(
       CurvedAnimation(
         parent: _animationController,
         curve: widget.curve,
@@ -229,15 +231,26 @@ class _TopSnackBarState extends State<_TopSnackBar>
           child: widget.child,
         );
       case DismissType.onSwipe:
-        return Dismissible(
-          direction: widget.dismissDirection,
-          key: const ValueKey(_TopSnackBar),
-          onDismissed: (direction) {
-            _timer?.cancel();
-            widget.onDismissed.call();
-          },
-          child: widget.child,
-        );
+        var childWidget = widget.child;
+        for (final direction in widget.dismissDirections) {
+          childWidget = Dismissible(
+            direction: direction,
+            key: UniqueKey(),
+            dismissThresholds: const {DismissDirection.up: 0.2},
+            confirmDismiss: (direction) async {
+              if (!widget.persistent && mounted) {
+                if (direction == DismissDirection.down) {
+                  await _animationController.reverse();
+                } else {
+                  _animationController.reset();
+                }
+              }
+              return false;
+            },
+            child: childWidget,
+          );
+        }
+        return childWidget;
       case DismissType.none:
         return widget.child;
     }

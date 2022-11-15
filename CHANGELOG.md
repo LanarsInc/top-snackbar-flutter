@@ -1,5 +1,12 @@
+## 3.0.0 - 15.11.2022
+* **Breaking change**. Remove BuildContext in favor of OverlayState
+* **Breaking change**. Add multi direction swipe for DismissType.onSwipe by [mofadillah](https://github.com/mofadillah) 'dismissDirection' change type from DismissDirection to List<DismissDirection>
+* Enhancement: Add TextAlign parameter to CustomSnackBar widget by [ayoubrajabi](https://github.com/ayoubrajabi)
+* Bugfix [#35](https://github.com/LanarsInc/top-snackbar-flutter/issues/35) Snackbar stuck on status bar
+
 ## 2.1.1 - 07.07.2022
 * Fix dismissible widget dismissed error
+
 ## 2.1.0 - 04.07.2022
 * Enhancement: Add `safeAreaValues` parameter by [LeGoffMael](https://github.com/LeGoffMael)
 * Enhancement: Make `top_snackbar_flutter` dismissible by swipe with parameters `dismissType` and `dismissDirection` by [LeGoffMael](https://github.com/LeGoffMael)

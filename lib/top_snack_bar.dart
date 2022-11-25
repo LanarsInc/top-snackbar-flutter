@@ -49,7 +49,7 @@ OverlayEntry? _previousEntry;
 /// can be dismissed. This argument is only used when [dismissType] is equal
 /// to `DismissType.onSwipe`. Defaults to `[DismissDirection.up]`
 void showTopSnackBar(
-  OverlayState overlayState,
+  OverlayState? overlayState,
   Widget child, {
   Duration animationDuration = const Duration(milliseconds: 1200),
   Duration reverseAnimationDuration = const Duration(milliseconds: 550),
@@ -93,7 +93,7 @@ void showTopSnackBar(
     _previousEntry?.remove();
   }
 
-  overlayState.insert(_overlayEntry);
+  overlayState?.insert(_overlayEntry);
   _previousEntry = _overlayEntry;
 }
 

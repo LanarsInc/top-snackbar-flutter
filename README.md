@@ -16,7 +16,7 @@ but we have a CustomSnackBar for example.
 
 ```dart
 showTopSnackBar(
-    context,
+    Overlay.of(context),
     CustomSnackBar.success(
       message:
           "Good job, your release is successful. Have a nice day",
@@ -26,7 +26,7 @@ showTopSnackBar(
 
 ```dart
 showTopSnackBar(
-    context,
+    Overlay.of(context),
     CustomSnackBar.info(
       message:
           "There is some information. You need to do something with that",
@@ -36,7 +36,7 @@ showTopSnackBar(
 
 ```dart
 showTopSnackBar(
-    context,
+    Overlay.of(context),
     CustomSnackBar.error(
       message:
           "Something went wrong. Please check your credentials and try again",
@@ -51,7 +51,7 @@ AnimationController localAnimationController;
 TapBounceContainer(
     onTap: () {
         showTopSnackBar(
-            context,
+            Overlay.of(context),
             CustomSnackBar.info(
               message: "Persistent SnackBar",
             ),

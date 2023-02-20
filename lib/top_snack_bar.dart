@@ -1,12 +1,14 @@
 import 'dart:async';
 
+import 'package:driver_stat/presentation/widgets/snackbar/safe_area_values.dart';
+import 'package:driver_stat/presentation/widgets/snackbar/tap_bounce_container.dart';
 import 'package:flutter/material.dart';
-import 'package:top_snackbar_flutter/safe_area_values.dart';
-import 'package:top_snackbar_flutter/tap_bounce_container.dart';
 
 typedef ControllerCallback = void Function(AnimationController);
 
 enum DismissType { onTap, onSwipe, none }
+
+enum SnackBarPosition { top, bottom }
 
 OverlayEntry? _previousEntry;
 
@@ -62,6 +64,7 @@ void showTopSnackBar(
   Curve reverseCurve = Curves.linearToEaseOut,
   SafeAreaValues safeAreaValues = const SafeAreaValues(),
   DismissType dismissType = DismissType.onTap,
+  SnackBarPosition snackBarPosition = SnackBarPosition.top,
   List<DismissDirection> dismissDirection = const [DismissDirection.up],
 }) {
   late OverlayEntry _overlayEntry;
@@ -84,6 +87,7 @@ void showTopSnackBar(
         safeAreaValues: safeAreaValues,
         dismissType: dismissType,
         dismissDirections: dismissDirection,
+        snackBarPosition: snackBarPosition,
         child: child,
       );
     },
@@ -111,6 +115,7 @@ class _TopSnackBar extends StatefulWidget {
     required this.reverseCurve,
     required this.safeAreaValues,
     required this.dismissDirections,
+    required this.snackBarPosition,
     this.onTap,
     this.persistent = false,
     this.onAnimationControllerInit,
@@ -131,6 +136,7 @@ class _TopSnackBar extends StatefulWidget {
   final SafeAreaValues safeAreaValues;
   final DismissType dismissType;
   final List<DismissDirection> dismissDirections;
+  final SnackBarPosition snackBarPosition;
 
   @override
   _TopSnackBarState createState() => _TopSnackBarState();
@@ -143,7 +149,7 @@ class _TopSnackBarState extends State<_TopSnackBar>
 
   Timer? _timer;
 
-  final _offsetTween = Tween(begin: const Offset(0, -1), end: Offset.zero);
+  late final _offsetTween;
 
   @override
   void initState() {
@@ -170,6 +176,11 @@ class _TopSnackBarState extends State<_TopSnackBar>
 
     widget.onAnimationControllerInit?.call(_animationController);
 
+    if (widget.snackBarPosition == SnackBarPosition.top) {
+      _offsetTween = Tween(begin: const Offset(0, -1), end: Offset.zero);
+    } else {
+      _offsetTween = Tween(begin: const Offset(0, 1), end: Offset.zero);
+    }
     _offsetAnimation = _offsetTween.animate(
       CurvedAnimation(
         parent: _animationController,
@@ -193,9 +204,14 @@ class _TopSnackBarState extends State<_TopSnackBar>
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: widget.padding.top,
+      top: widget.snackBarPosition == SnackBarPosition.top
+          ? widget.padding.top
+          : null,
       left: widget.padding.left,
       right: widget.padding.right,
+      bottom: widget.snackBarPosition == SnackBarPosition.bottom
+          ? widget.padding.bottom
+          : null,
       child: SlideTransition(
         position: _offsetAnimation,
         child: SafeArea(

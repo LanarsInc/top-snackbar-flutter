@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:driver_stat/presentation/widgets/snackbar/safe_area_values.dart';
-import 'package:driver_stat/presentation/widgets/snackbar/tap_bounce_container.dart';
 import 'package:flutter/material.dart';
+import 'package:top_snackbar_flutter/safe_area_values.dart';
+import 'package:top_snackbar_flutter/tap_bounce_container.dart';
 
 typedef ControllerCallback = void Function(AnimationController);
 

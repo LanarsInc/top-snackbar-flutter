@@ -8,6 +8,8 @@ typedef ControllerCallback = void Function(AnimationController);
 
 enum DismissType { onTap, onSwipe, none }
 
+enum SnackBarPosition { top, bottom }
+
 OverlayEntry? _previousEntry;
 
 /// The [overlayState] argument is used to add specific overlay state.
@@ -62,6 +64,7 @@ void showTopSnackBar(
   Curve reverseCurve = Curves.linearToEaseOut,
   SafeAreaValues safeAreaValues = const SafeAreaValues(),
   DismissType dismissType = DismissType.onTap,
+  SnackBarPosition snackBarPosition = SnackBarPosition.top,
   List<DismissDirection> dismissDirection = const [DismissDirection.up],
 }) {
   late OverlayEntry _overlayEntry;
@@ -83,6 +86,7 @@ void showTopSnackBar(
         reverseCurve: reverseCurve,
         safeAreaValues: safeAreaValues,
         dismissType: dismissType,
+        snackBarPosition: snackBarPosition,
         dismissDirections: dismissDirection,
         child: child,
       );
@@ -111,6 +115,7 @@ class _TopSnackBar extends StatefulWidget {
     required this.reverseCurve,
     required this.safeAreaValues,
     required this.dismissDirections,
+    required this.snackBarPosition,
     this.onTap,
     this.persistent = false,
     this.onAnimationControllerInit,
@@ -131,19 +136,19 @@ class _TopSnackBar extends StatefulWidget {
   final SafeAreaValues safeAreaValues;
   final DismissType dismissType;
   final List<DismissDirection> dismissDirections;
+  final SnackBarPosition snackBarPosition;
 
   @override
   _TopSnackBarState createState() => _TopSnackBarState();
 }
 
-class _TopSnackBarState extends State<_TopSnackBar>
-    with SingleTickerProviderStateMixin {
+class _TopSnackBarState extends State<_TopSnackBar> with SingleTickerProviderStateMixin {
   late final Animation<Offset> _offsetAnimation;
   late final AnimationController _animationController;
 
   Timer? _timer;
 
-  final _offsetTween = Tween(begin: const Offset(0, -1), end: Offset.zero);
+  late final Tween<Offset> _offsetTween;
 
   @override
   void initState() {
@@ -170,6 +175,15 @@ class _TopSnackBarState extends State<_TopSnackBar>
 
     widget.onAnimationControllerInit?.call(_animationController);
 
+    switch(widget.snackBarPosition) {
+      case SnackBarPosition.top:
+        _offsetTween = Tween<Offset>(begin: const Offset(0, -1), end: Offset.zero);
+        break;
+      case SnackBarPosition.bottom:
+        _offsetTween = Tween<Offset>(begin: const Offset(0, 1), end: Offset.zero);
+        break;
+    }
+
     _offsetAnimation = _offsetTween.animate(
       CurvedAnimation(
         parent: _animationController,
@@ -193,7 +207,8 @@ class _TopSnackBarState extends State<_TopSnackBar>
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: widget.padding.top,
+      top: widget.snackBarPosition == SnackBarPosition.top ? widget.padding.top : null,
+      bottom: widget.snackBarPosition == SnackBarPosition.bottom ? widget.padding.bottom : null,
       left: widget.padding.left,
       right: widget.padding.right,
       child: SlideTransition(
@@ -204,8 +219,7 @@ class _TopSnackBarState extends State<_TopSnackBar>
           left: widget.safeAreaValues.left,
           right: widget.safeAreaValues.right,
           minimum: widget.safeAreaValues.minimum,
-          maintainBottomViewPadding:
-              widget.safeAreaValues.maintainBottomViewPadding,
+          maintainBottomViewPadding: widget.safeAreaValues.maintainBottomViewPadding,
           child: _buildDismissibleChild(),
         ),
       ),

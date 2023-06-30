@@ -8,14 +8,14 @@ void main() {
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({Key key}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   MyAppState createState() => MyAppState();
 }
 
 class MyAppState extends State<MyApp> {
-  AnimationController localAnimationController;
+  late AnimationController localAnimationController;
 
   @override
   Widget build(BuildContext context) {

@@ -1,4 +1,5 @@
-# top-snackbar-flutter
+[![SWUbanner](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://vshymanskyy.github.io/StandWithUkraine)
+
 Made in [lanars.com](https://lanars.com).
 
 [![pub package](https://img.shields.io/pub/v/top_snackbar_flutter.svg)](https://pub.dev/packages/top_snackbar_flutter)
@@ -16,7 +17,7 @@ but we have a CustomSnackBar for example.
 
 ```dart
 showTopSnackBar(
-    context,
+    Overlay.of(context),
     CustomSnackBar.success(
       message:
           "Good job, your release is successful. Have a nice day",
@@ -26,7 +27,7 @@ showTopSnackBar(
 
 ```dart
 showTopSnackBar(
-    context,
+    Overlay.of(context),
     CustomSnackBar.info(
       message:
           "There is some information. You need to do something with that",
@@ -36,7 +37,7 @@ showTopSnackBar(
 
 ```dart
 showTopSnackBar(
-    context,
+    Overlay.of(context),
     CustomSnackBar.error(
       message:
           "Something went wrong. Please check your credentials and try again",
@@ -51,7 +52,7 @@ AnimationController localAnimationController;
 TapBounceContainer(
     onTap: () {
         showTopSnackBar(
-            context,
+            Overlay.of(context),
             CustomSnackBar.info(
               message: "Persistent SnackBar",
             ),

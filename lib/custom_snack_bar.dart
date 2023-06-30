@@ -128,7 +128,7 @@ class CustomSnackBarState extends State<CustomSnackBar> {
               padding: widget.messagePadding,
               child: Text(
                 widget.message,
-                style: theme.textTheme.bodyText2?.merge(widget.textStyle),
+                style: theme.textTheme.bodyMedium?.merge(widget.textStyle),
                 textAlign: widget.textAlign,
                 overflow: TextOverflow.ellipsis,
                 maxLines: widget.maxLines,

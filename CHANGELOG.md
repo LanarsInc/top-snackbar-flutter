@@ -1,3 +1,6 @@
+## 3.0.0+1 - 27.12.2022
+* Update README.md
+
 ## 3.0.0 - 15.11.2022
 * **Breaking change**. Remove BuildContext in favor of OverlayState
 * **Breaking change**. Add multi direction swipe for DismissType.onSwipe by [mofadillah](https://github.com/mofadillah) 'dismissDirection' change type from DismissDirection to List<DismissDirection>

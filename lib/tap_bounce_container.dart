@@ -17,6 +17,7 @@ class TapBounceContainer extends StatefulWidget {
   TapBounceContainerState createState() => TapBounceContainerState();
 }
 
+/// State for a [TapBounceContainer].
 class TapBounceContainerState extends State<TapBounceContainer>
     with SingleTickerProviderStateMixin {
   late double _scale;

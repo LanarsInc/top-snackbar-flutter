@@ -6,8 +6,10 @@ import 'package:top_snackbar_flutter/tap_bounce_container.dart';
 
 typedef ControllerCallback = void Function(AnimationController);
 
+/// Represents possible triggers to dismiss the snackbar.
 enum DismissType { onTap, onSwipe, none }
 
+/// Represents possible vertical position of snackbar.
 enum SnackBarPosition { top, bottom }
 
 OverlayEntry? _previousEntry;
@@ -44,10 +46,13 @@ OverlayEntry? _previousEntry;
 /// The [safeAreaValues] argument is used to specify the arguments of the
 /// [SafeArea] widget that wrap the snackbar.
 ///
-/// The [dismissType] argument specify which action to trigger to
+/// The [dismissType] argument specifies which action to trigger to
 /// dismiss the snackbar. Defaults to `TopSnackBarDismissType.onTap`
 ///
-/// The [dismissDirection] argument specify in which direction the snackbar
+/// The [snackBarPosition] argument specifies the vertical position of the snackbar.
+/// Defaults to [SnackBarPosition.top]
+///
+/// The [dismissDirection] argument specifies in which direction the snackbar
 /// can be dismissed. This argument is only used when [dismissType] is equal
 /// to `DismissType.onSwipe`. Defaults to `[DismissDirection.up]`
 void showTopSnackBar(

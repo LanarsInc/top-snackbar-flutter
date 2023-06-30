@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+/// A data class that is used to pass safe area values for snackbar
 class SafeAreaValues {
   const SafeAreaValues({
     this.left = true,

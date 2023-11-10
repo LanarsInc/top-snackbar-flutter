@@ -59,7 +59,7 @@ class CustomSnackBar extends StatefulWidget {
     required this.message,
     this.messagePadding = const EdgeInsets.symmetric(horizontal: 24),
     this.icon = const Icon(
-      Icons.sentiment_neutral,
+      Icons.warning_amber_rounded,
       color: Color(0x15000000),
       size: 120,
     ),

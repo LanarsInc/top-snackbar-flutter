@@ -54,6 +54,31 @@ class CustomSnackBar extends StatefulWidget {
     this.textAlign = TextAlign.center,
   }) : super(key: key);
 
+  const CustomSnackBar.warning({
+    Key? key,
+    required this.message,
+    this.messagePadding = const EdgeInsets.symmetric(horizontal: 24),
+    this.icon = const Icon(
+      Icons.sentiment_neutral,
+      color: Color(0x15000000),
+      size: 120,
+    ),
+    this.textStyle = const TextStyle(
+      fontWeight: FontWeight.w600,
+      fontSize: 16,
+      color: Colors.white,
+    ),
+    this.maxLines = 2,
+    this.iconRotationAngle = 32,
+    this.iconPositionTop = -10,
+    this.iconPositionLeft = -8,
+    this.backgroundColor = const Color(0xfff0ad4e),
+    this.boxShadow = kDefaultBoxShadow,
+    this.borderRadius = kDefaultBorderRadius,
+    this.textScaleFactor = 1.0,
+    this.textAlign = TextAlign.center,
+  }) : super(key: key);
+
   const CustomSnackBar.error({
     Key? key,
     required this.message,

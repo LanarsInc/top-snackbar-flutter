@@ -77,7 +77,9 @@ void showTopSnackBar(
     builder: (_) {
       return _TopSnackBar(
         onDismissed: () {
-          _overlayEntry.remove();
+          if(overlayState.mounted){
+            _overlayEntry.remove();
+          }
           _previousEntry = null;
         },
         animationDuration: animationDuration,

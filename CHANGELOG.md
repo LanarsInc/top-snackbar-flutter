@@ -1,3 +1,6 @@
+## 3.2.0 - 29.01.2025
+* Provide `onTap` callback for `DismissType.none` and `DismissType.onSwipe` dismissTypes, thanks to [DarienRomero](https://github.com/DarienRomero)
+
 ## 3.1.0 - 30.06.2023
 * Enhancement: Add `snackBarPosition` parameter by [fox-avokadik](https://github.com/fox-avokadik)
 * Correct errors in the example

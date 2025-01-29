@@ -132,7 +132,7 @@ class CustomSnackBarState extends State<CustomSnackBar> {
                 textAlign: widget.textAlign,
                 overflow: TextOverflow.ellipsis,
                 maxLines: widget.maxLines,
-                textScaleFactor: widget.textScaleFactor,
+                textScaler: TextScaler.linear(widget.textScaleFactor),
               ),
             ),
           ),

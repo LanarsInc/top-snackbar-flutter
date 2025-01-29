@@ -1,3 +1,8 @@
+## 3.1.0 - 30.06.2023
+* Enhancement: Add `snackBarPosition` parameter by [fox-avokadik](https://github.com/fox-avokadik)
+* Correct errors in the example
+* Update README.md
+
 ## 3.0.0+1 - 27.12.2022
 * Update README.md
 

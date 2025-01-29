@@ -266,7 +266,10 @@ class _TopSnackBarState extends State<_TopSnackBar> with SingleTickerProviderSta
         }
         return childWidget;
       case DismissType.none:
-        return widget.child;
+        return TapBounceContainer(
+          onTap: () => widget.onTap?.call(),
+          child: widget.child,
+        );
     }
   }
 }

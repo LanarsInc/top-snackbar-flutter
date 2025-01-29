@@ -180,7 +180,7 @@ class _TopSnackBarState extends State<_TopSnackBar> with SingleTickerProviderSta
 
     widget.onAnimationControllerInit?.call(_animationController);
 
-    switch(widget.snackBarPosition) {
+    switch (widget.snackBarPosition) {
       case SnackBarPosition.top:
         _offsetTween = Tween<Offset>(begin: const Offset(0, -1), end: Offset.zero);
         break;

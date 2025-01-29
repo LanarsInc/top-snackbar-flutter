@@ -77,7 +77,9 @@ void showTopSnackBar(
     builder: (_) {
       return _TopSnackBar(
         onDismissed: () {
-          _overlayEntry.remove();
+          if(overlayState.mounted){
+            _overlayEntry.remove();
+          }
           _previousEntry = null;
         },
         animationDuration: animationDuration,
@@ -180,7 +182,7 @@ class _TopSnackBarState extends State<_TopSnackBar> with SingleTickerProviderSta
 
     widget.onAnimationControllerInit?.call(_animationController);
 
-    switch(widget.snackBarPosition) {
+    switch (widget.snackBarPosition) {
       case SnackBarPosition.top:
         _offsetTween = Tween<Offset>(begin: const Offset(0, -1), end: Offset.zero);
         break;
@@ -247,26 +249,37 @@ class _TopSnackBarState extends State<_TopSnackBar> with SingleTickerProviderSta
       case DismissType.onSwipe:
         var childWidget = widget.child;
         for (final direction in widget.dismissDirections) {
-          childWidget = Dismissible(
-            direction: direction,
-            key: UniqueKey(),
-            dismissThresholds: const {DismissDirection.up: 0.2},
-            confirmDismiss: (direction) async {
+          childWidget = TapBounceContainer(
+            onTap: () {
+              widget.onTap?.call();
               if (!widget.persistent && mounted) {
-                if (direction == DismissDirection.down) {
-                  await _animationController.reverse();
-                } else {
-                  _animationController.reset();
-                }
+                _animationController.reverse();
               }
-              return false;
             },
-            child: childWidget,
+            child: Dismissible(
+              direction: direction,
+              key: UniqueKey(),
+              dismissThresholds: const {DismissDirection.up: 0.2},
+              confirmDismiss: (direction) async {
+                if (!widget.persistent && mounted) {
+                  if (direction == DismissDirection.down) {
+                    await _animationController.reverse();
+                  } else {
+                    _animationController.reset();
+                  }
+                }
+                return false;
+              },
+              child: childWidget,
+            ),
           );
         }
         return childWidget;
       case DismissType.none:
-        return widget.child;
+        return TapBounceContainer(
+          onTap: () => widget.onTap?.call(),
+          child: widget.child,
+        );
     }
   }
 }

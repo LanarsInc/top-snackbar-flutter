@@ -1,3 +1,6 @@
+## 3.3.0 - 23.05.2025
+* Enhancement: Add `onDismissed` parameter.
+
 ## 3.2.0 - 29.01.2025
 * Provide `onTap` callback for `DismissType.none` and `DismissType.onSwipe` dismissTypes, thanks to [DarienRomero](https://github.com/DarienRomero)
 

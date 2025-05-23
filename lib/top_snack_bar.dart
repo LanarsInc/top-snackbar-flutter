@@ -55,6 +55,9 @@ OverlayEntry? _previousEntry;
 /// The [dismissDirection] argument specifies in which direction the snackbar
 /// can be dismissed. This argument is only used when [dismissType] is equal
 /// to `DismissType.onSwipe`. Defaults to `[DismissDirection.up]`
+///
+/// The [onDismissed] callback is called when the snackbar is dismissed, either by
+/// a user interaction or after the reverse animation.
 void showTopSnackBar(
   OverlayState overlayState,
   Widget child, {
@@ -71,16 +74,18 @@ void showTopSnackBar(
   DismissType dismissType = DismissType.onTap,
   SnackBarPosition snackBarPosition = SnackBarPosition.top,
   List<DismissDirection> dismissDirection = const [DismissDirection.up],
+  VoidCallback? onDismissed,
 }) {
   late OverlayEntry _overlayEntry;
   _overlayEntry = OverlayEntry(
     builder: (_) {
       return _TopSnackBar(
         onDismissed: () {
-          if(overlayState.mounted){
+          if (overlayState.mounted) {
             _overlayEntry.remove();
           }
           _previousEntry = null;
+          onDismissed?.call();
         },
         animationDuration: animationDuration,
         reverseAnimationDuration: reverseAnimationDuration,

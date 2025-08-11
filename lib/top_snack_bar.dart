@@ -83,6 +83,7 @@ void showTopSnackBar(
         onDismissed: () {
           if (overlayState.mounted) {
             _overlayEntry.remove();
+            _overlayEntry.dispose();
           }
           _previousEntry = null;
           onDismissed?.call();
@@ -107,6 +108,8 @@ void showTopSnackBar(
 
   if (_previousEntry != null && _previousEntry!.mounted) {
     _previousEntry?.remove();
+    _previousEntry?.dispose();
+    _previousEntry = null;
   }
 
   overlayState.insert(_overlayEntry);
@@ -154,13 +157,16 @@ class _TopSnackBar extends StatefulWidget {
   _TopSnackBarState createState() => _TopSnackBarState();
 }
 
-class _TopSnackBarState extends State<_TopSnackBar> with SingleTickerProviderStateMixin {
+class _TopSnackBarState extends State<_TopSnackBar>
+    with SingleTickerProviderStateMixin {
   late final Animation<Offset> _offsetAnimation;
   late final AnimationController _animationController;
 
   Timer? _timer;
 
   late final Tween<Offset> _offsetTween;
+
+  CurvedAnimation? _curvedAnimation;
 
   @override
   void initState() {
@@ -189,19 +195,24 @@ class _TopSnackBarState extends State<_TopSnackBar> with SingleTickerProviderSta
 
     switch (widget.snackBarPosition) {
       case SnackBarPosition.top:
-        _offsetTween = Tween<Offset>(begin: const Offset(0, -1), end: Offset.zero);
+        _offsetTween =
+            Tween<Offset>(begin: const Offset(0, -1), end: Offset.zero);
         break;
       case SnackBarPosition.bottom:
-        _offsetTween = Tween<Offset>(begin: const Offset(0, 1), end: Offset.zero);
+        _offsetTween =
+            Tween<Offset>(begin: const Offset(0, 1), end: Offset.zero);
         break;
     }
 
+    final curvedAnimation = CurvedAnimation(
+      parent: _animationController,
+      curve: widget.curve,
+      reverseCurve: widget.reverseCurve,
+    );
+    _curvedAnimation = curvedAnimation;
+
     _offsetAnimation = _offsetTween.animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: widget.curve,
-        reverseCurve: widget.reverseCurve,
-      ),
+      curvedAnimation,
     );
     if (mounted) {
       _animationController.forward();
@@ -211,16 +222,27 @@ class _TopSnackBarState extends State<_TopSnackBar> with SingleTickerProviderSta
 
   @override
   void dispose() {
+    _curvedAnimation?.dispose();
+    _curvedAnimation = null;
     _animationController.dispose();
     _timer?.cancel();
+    if (_previousEntry != null && _previousEntry!.mounted) {
+      _previousEntry?.remove();
+      _previousEntry?.dispose();
+      _previousEntry = null;
+    }
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: widget.snackBarPosition == SnackBarPosition.top ? widget.padding.top : null,
-      bottom: widget.snackBarPosition == SnackBarPosition.bottom ? widget.padding.bottom : null,
+      top: widget.snackBarPosition == SnackBarPosition.top
+          ? widget.padding.top
+          : null,
+      bottom: widget.snackBarPosition == SnackBarPosition.bottom
+          ? widget.padding.bottom
+          : null,
       left: widget.padding.left,
       right: widget.padding.right,
       child: SlideTransition(
@@ -231,7 +253,8 @@ class _TopSnackBarState extends State<_TopSnackBar> with SingleTickerProviderSta
           left: widget.safeAreaValues.left,
           right: widget.safeAreaValues.right,
           minimum: widget.safeAreaValues.minimum,
-          maintainBottomViewPadding: widget.safeAreaValues.maintainBottomViewPadding,
+          maintainBottomViewPadding:
+              widget.safeAreaValues.maintainBottomViewPadding,
           child: _buildDismissibleChild(),
         ),
       ),

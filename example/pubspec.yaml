@@ -6,11 +6,12 @@ description: Demonstrates how to use the top_snackbar_flutter plugin.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=3.12.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
+  material_ui: ^1.0.0
 
   top_snackbar_flutter:
     # When depending on this package from a real application you should use:

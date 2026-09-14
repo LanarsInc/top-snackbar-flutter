@@ -1,3 +1,8 @@
+## Unreleased
+* Dropped the dependency on the in-SDK Material and Cupertino libraries. `showTopSnackBar`, `TapBounceContainer` and `SafeAreaValues` now import `package:flutter/widgets.dart` only, and `CustomSnackBar` — the one widget that reads a theme — imports [`material_ui`](https://pub.dev/packages/material_ui). Material was decoupled from the Flutter SDK in 3.47; the in-SDK copy is [frozen to contributions](https://github.com/flutter/flutter/issues/184093) and [scheduled for removal](https://github.com/flutter/flutter/issues/172942).
+* **Breaking for apps still on the in-SDK Material:** `CustomSnackBar` resolves `material_ui`'s `Theme`, so in a non-migrated app its text style comes from `material_ui`'s default rather than the app theme. Apps using `showTopSnackBar` with their own widget (the common case) are unaffected either way.
+* Minimum SDK raised to Dart 3.12, which is what `material_ui` requires.
+
 ## 3.4.0 - 18.06.2026
 * Bugfix [#77](https://github.com/LanarsInc/top-snackbar-flutter/issues/77): Prevent snackbar dismissal by tap when swipe is enabled.
 * Bugfix: Fix memory leak by disposing overlay entries and `CurvedAnimation`, thanks to [LiuDongCai](https://github.com/LiuDongCai)

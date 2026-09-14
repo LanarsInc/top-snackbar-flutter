@@ -12,7 +12,7 @@ enum DismissType { onTap, onSwipe, none }
 /// Represents possible vertical position of snackbar.
 enum SnackBarPosition { top, bottom }
 
-OverlayEntry? _previousEntry;
+_SnackBarEntry? _previousEntry;
 
 /// The [overlayState] argument is used to add specific overlay state.
 /// If you are sure that there is a overlay state in your [BuildContext],
@@ -76,16 +76,15 @@ void showTopSnackBar(
   List<DismissDirection> dismissDirection = const [DismissDirection.up],
   VoidCallback? onDismissed,
 }) {
-  late OverlayEntry _overlayEntry;
-  _overlayEntry = OverlayEntry(
+  late final _SnackBarEntry snackBarEntry;
+  final overlayEntry = OverlayEntry(
     builder: (_) {
       return _TopSnackBar(
         onDismissed: () {
-          if (overlayState.mounted && _overlayEntry.mounted) {
-            _overlayEntry.remove();
-            _overlayEntry.dispose();
+          snackBarEntry.remove();
+          if (identical(_previousEntry, snackBarEntry)) {
+            _previousEntry = null;
           }
-          _previousEntry = null;
           onDismissed?.call();
         },
         animationDuration: animationDuration,
@@ -105,15 +104,27 @@ void showTopSnackBar(
       );
     },
   );
+  snackBarEntry = _SnackBarEntry(overlayEntry);
 
-  if (_previousEntry != null && _previousEntry!.mounted) {
-    _previousEntry?.remove();
-    _previousEntry?.dispose();
-    _previousEntry = null;
+  _previousEntry?.remove();
+  _previousEntry = snackBarEntry;
+  overlayState.insert(overlayEntry);
+}
+
+class _SnackBarEntry {
+  _SnackBarEntry(this.overlayEntry);
+
+  final OverlayEntry overlayEntry;
+  bool _isRemoved = false;
+
+  void remove() {
+    if (_isRemoved) {
+      return;
+    }
+    _isRemoved = true;
+    overlayEntry.remove();
+    overlayEntry.dispose();
   }
-
-  overlayState.insert(_overlayEntry);
-  _previousEntry = _overlayEntry;
 }
 
 /// Widget that controls all animations

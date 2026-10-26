@@ -8,14 +8,14 @@ void main() {
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   MyAppState createState() => MyAppState();
 }
 
 class MyAppState extends State<MyApp> {
-  late AnimationController localAnimationController;
+  AnimationController? localAnimationController;
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +85,7 @@ class MyAppState extends State<MyApp> {
                   ),
                   const SizedBox(height: 24),
                   TapBounceContainer(
-                    onTap: () => localAnimationController.reverse(),
+                    onTap: () => localAnimationController?.reverse(),
                     child: buildButton(context, 'Dismiss persistent SnackBar'),
                   ),
                   const SizedBox(height: 24),
@@ -121,7 +121,7 @@ class MyAppState extends State<MyApp> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.4),
+            color: Colors.grey.withValues(alpha: 0.4),
             spreadRadius: 6,
             blurRadius: 10,
             offset: const Offset(0, 3),

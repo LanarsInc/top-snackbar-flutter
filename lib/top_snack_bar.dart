@@ -81,8 +81,9 @@ void showTopSnackBar(
     builder: (_) {
       return _TopSnackBar(
         onDismissed: () {
-          if (overlayState.mounted) {
+          if (overlayState.mounted && _overlayEntry.mounted) {
             _overlayEntry.remove();
+            _overlayEntry.dispose();
           }
           _previousEntry = null;
           onDismissed?.call();
@@ -107,6 +108,8 @@ void showTopSnackBar(
 
   if (_previousEntry != null && _previousEntry!.mounted) {
     _previousEntry?.remove();
+    _previousEntry?.dispose();
+    _previousEntry = null;
   }
 
   overlayState.insert(_overlayEntry);
@@ -162,6 +165,8 @@ class _TopSnackBarState extends State<_TopSnackBar> with SingleTickerProviderSta
 
   late final Tween<Offset> _offsetTween;
 
+  CurvedAnimation? _curvedAnimation;
+
   @override
   void initState() {
     _animationController = AnimationController(
@@ -196,13 +201,14 @@ class _TopSnackBarState extends State<_TopSnackBar> with SingleTickerProviderSta
         break;
     }
 
-    _offsetAnimation = _offsetTween.animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: widget.curve,
-        reverseCurve: widget.reverseCurve,
-      ),
+    final curvedAnimation = CurvedAnimation(
+      parent: _animationController,
+      curve: widget.curve,
+      reverseCurve: widget.reverseCurve,
     );
+    _curvedAnimation = curvedAnimation;
+
+    _offsetAnimation = _offsetTween.animate(curvedAnimation);
     if (mounted) {
       _animationController.forward();
     }
@@ -211,6 +217,8 @@ class _TopSnackBarState extends State<_TopSnackBar> with SingleTickerProviderSta
 
   @override
   void dispose() {
+    _curvedAnimation?.dispose();
+    _curvedAnimation = null;
     _animationController.dispose();
     _timer?.cancel();
     super.dispose();
@@ -255,12 +263,7 @@ class _TopSnackBarState extends State<_TopSnackBar> with SingleTickerProviderSta
         var childWidget = widget.child;
         for (final direction in widget.dismissDirections) {
           childWidget = TapBounceContainer(
-            onTap: () {
-              widget.onTap?.call();
-              if (!widget.persistent && mounted) {
-                _animationController.reverse();
-              }
-            },
+            onTap: widget.onTap,
             child: Dismissible(
               direction: direction,
               key: UniqueKey(),

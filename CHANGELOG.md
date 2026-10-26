@@ -1,3 +1,8 @@
+## 3.4.0 - 18.06.2026
+* Bugfix [#77](https://github.com/LanarsInc/top-snackbar-flutter/issues/77): Prevent snackbar dismissal by tap when swipe is enabled.
+* Bugfix: Fix memory leak by disposing overlay entries and `CurvedAnimation`, thanks to [LiuDongCai](https://github.com/LiuDongCai)
+* Bugfix: Fix `initState` initialization order.
+
 ## 3.3.0 - 23.05.2025
 * Enhancement: Add `onDismissed` parameter.
 

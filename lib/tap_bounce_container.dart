@@ -4,11 +4,8 @@ import 'package:flutter/widgets.dart';
 
 /// Widget for nice tap effect. It decrease widget scale while tapping
 class TapBounceContainer extends StatefulWidget {
-  const TapBounceContainer({
-    Key? key,
-    required this.child,
-    this.onTap,
-  }) : super(key: key);
+  const TapBounceContainer({Key? key, required this.child, this.onTap})
+    : super(key: key);
 
   final Widget child;
   final VoidCallback? onTap;
@@ -28,15 +25,16 @@ class TapBounceContainerState extends State<TapBounceContainer>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: animationDuration,
-      upperBound: 0.04,
-    )..addListener(() {
-        if (mounted) {
-          setState(() {});
-        }
-      });
+    _controller =
+        AnimationController(
+          vsync: this,
+          duration: animationDuration,
+          upperBound: 0.04,
+        )..addListener(() {
+          if (mounted) {
+            setState(() {});
+          }
+        });
   }
 
   @override
@@ -53,10 +51,7 @@ class TapBounceContainerState extends State<TapBounceContainer>
       onTapDown: _onTapDown,
       onTapUp: _onTapUp,
       onPanEnd: _onPanEnd,
-      child: Transform.scale(
-        scale: _scale,
-        child: widget.child,
-      ),
+      child: Transform.scale(scale: _scale, child: widget.child),
     );
   }
 

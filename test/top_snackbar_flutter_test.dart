@@ -11,8 +11,8 @@ void main() {
   setUp(() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(channel, (message) async {
-      return '42';
-    });
+          return '42';
+        });
   });
 
   tearDown(() {
@@ -21,34 +21,35 @@ void main() {
   });
 
   testWidgets(
-      'showing a snackbar while the previous one finishes its exit animation does not throw',
-      (tester) async {
-    await tester.pumpWidget(const MaterialApp(home: Scaffold()));
-    final overlayState = tester.state<OverlayState>(find.byType(Overlay));
+    'showing a snackbar while the previous one finishes its exit animation does not throw',
+    (tester) async {
+      await tester.pumpWidget(const MaterialApp(home: Scaffold()));
+      final overlayState = tester.state<OverlayState>(find.byType(Overlay));
 
-    late AnimationController firstController;
-    showTopSnackBar(
-      overlayState,
-      const Text('first'),
-      animationDuration: const Duration(milliseconds: 100),
-      reverseAnimationDuration: const Duration(milliseconds: 100),
-      persistent: true,
-      onAnimationControllerInit: (controller) => firstController = controller,
-    );
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 200));
+      late AnimationController firstController;
+      showTopSnackBar(
+        overlayState,
+        const Text('first'),
+        animationDuration: const Duration(milliseconds: 100),
+        reverseAnimationDuration: const Duration(milliseconds: 100),
+        persistent: true,
+        onAnimationControllerInit: (controller) => firstController = controller,
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
 
-    firstController.reverse();
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 50));
+      firstController.reverse();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 50));
 
-    showTopSnackBar(overlayState, const Text('second'), persistent: true);
+      showTopSnackBar(overlayState, const Text('second'), persistent: true);
 
-    await tester.pump(const Duration(milliseconds: 100));
-    await tester.pump(const Duration(seconds: 2));
+      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pump(const Duration(seconds: 2));
 
-    expect(tester.takeException(), isNull);
-    expect(find.text('first'), findsNothing);
-    expect(find.text('second'), findsOneWidget);
-  });
+      expect(tester.takeException(), isNull);
+      expect(find.text('first'), findsNothing);
+      expect(find.text('second'), findsOneWidget);
+    },
+  );
 }

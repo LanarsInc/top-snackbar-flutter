@@ -1,7 +1,8 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:top_snackbar_flutter/safe_area_values.dart';
+import 'package:top_snackbar_flutter/src/snack_bar_entry.dart';
 import 'package:top_snackbar_flutter/tap_bounce_container.dart';
 
 typedef ControllerCallback = void Function(AnimationController);
@@ -12,7 +13,7 @@ enum DismissType { onTap, onSwipe, none }
 /// Represents possible vertical position of snackbar.
 enum SnackBarPosition { top, bottom }
 
-OverlayEntry? _previousEntry;
+SnackBarEntry? _previousEntry;
 
 /// The [overlayState] argument is used to add specific overlay state.
 /// If you are sure that there is a overlay state in your [BuildContext],
@@ -76,16 +77,15 @@ void showTopSnackBar(
   List<DismissDirection> dismissDirection = const [DismissDirection.up],
   VoidCallback? onDismissed,
 }) {
-  late OverlayEntry _overlayEntry;
-  _overlayEntry = OverlayEntry(
+  late final SnackBarEntry snackBarEntry;
+  final overlayEntry = OverlayEntry(
     builder: (_) {
       return _TopSnackBar(
         onDismissed: () {
-          if (overlayState.mounted && _overlayEntry.mounted) {
-            _overlayEntry.remove();
-            _overlayEntry.dispose();
+          snackBarEntry.remove();
+          if (identical(_previousEntry, snackBarEntry)) {
+            _previousEntry = null;
           }
-          _previousEntry = null;
           onDismissed?.call();
         },
         animationDuration: animationDuration,
@@ -105,15 +105,11 @@ void showTopSnackBar(
       );
     },
   );
+  snackBarEntry = SnackBarEntry(overlayEntry);
 
-  if (_previousEntry != null && _previousEntry!.mounted) {
-    _previousEntry?.remove();
-    _previousEntry?.dispose();
-    _previousEntry = null;
-  }
-
-  overlayState.insert(_overlayEntry);
-  _previousEntry = _overlayEntry;
+  _previousEntry?.remove();
+  _previousEntry = snackBarEntry;
+  overlayState.insert(overlayEntry);
 }
 
 /// Widget that controls all animations
@@ -157,7 +153,8 @@ class _TopSnackBar extends StatefulWidget {
   _TopSnackBarState createState() => _TopSnackBarState();
 }
 
-class _TopSnackBarState extends State<_TopSnackBar> with SingleTickerProviderStateMixin {
+class _TopSnackBarState extends State<_TopSnackBar>
+    with SingleTickerProviderStateMixin {
   late final Animation<Offset> _offsetAnimation;
   late final AnimationController _animationController;
 
@@ -174,30 +171,34 @@ class _TopSnackBarState extends State<_TopSnackBar> with SingleTickerProviderSta
       duration: widget.animationDuration,
       reverseDuration: widget.reverseAnimationDuration,
     );
-    _animationController.addStatusListener(
-      (status) {
-        if (status == AnimationStatus.completed && !widget.persistent) {
-          _timer = Timer(widget.displayDuration, () {
-            if (mounted) {
-              _animationController.reverse();
-            }
-          });
-        }
-        if (status == AnimationStatus.dismissed) {
-          _timer?.cancel();
-          widget.onDismissed.call();
-        }
-      },
-    );
+    _animationController.addStatusListener((status) {
+      if (status == AnimationStatus.completed && !widget.persistent) {
+        _timer = Timer(widget.displayDuration, () {
+          if (mounted) {
+            _animationController.reverse();
+          }
+        });
+      }
+      if (status == AnimationStatus.dismissed) {
+        _timer?.cancel();
+        widget.onDismissed.call();
+      }
+    });
 
     widget.onAnimationControllerInit?.call(_animationController);
 
     switch (widget.snackBarPosition) {
       case SnackBarPosition.top:
-        _offsetTween = Tween<Offset>(begin: const Offset(0, -1), end: Offset.zero);
+        _offsetTween = Tween<Offset>(
+          begin: const Offset(0, -1),
+          end: Offset.zero,
+        );
         break;
       case SnackBarPosition.bottom:
-        _offsetTween = Tween<Offset>(begin: const Offset(0, 1), end: Offset.zero);
+        _offsetTween = Tween<Offset>(
+          begin: const Offset(0, 1),
+          end: Offset.zero,
+        );
         break;
     }
 
@@ -227,8 +228,12 @@ class _TopSnackBarState extends State<_TopSnackBar> with SingleTickerProviderSta
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: widget.snackBarPosition == SnackBarPosition.top ? widget.padding.top : null,
-      bottom: widget.snackBarPosition == SnackBarPosition.bottom ? widget.padding.bottom : null,
+      top: widget.snackBarPosition == SnackBarPosition.top
+          ? widget.padding.top
+          : null,
+      bottom: widget.snackBarPosition == SnackBarPosition.bottom
+          ? widget.padding.bottom
+          : null,
       left: widget.padding.left,
       right: widget.padding.right,
       child: SlideTransition(
@@ -239,7 +244,8 @@ class _TopSnackBarState extends State<_TopSnackBar> with SingleTickerProviderSta
           left: widget.safeAreaValues.left,
           right: widget.safeAreaValues.right,
           minimum: widget.safeAreaValues.minimum,
-          maintainBottomViewPadding: widget.safeAreaValues.maintainBottomViewPadding,
+          maintainBottomViewPadding:
+              widget.safeAreaValues.maintainBottomViewPadding,
           child: _buildDismissibleChild(),
         ),
       ),

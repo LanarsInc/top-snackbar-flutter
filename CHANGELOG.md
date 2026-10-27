@@ -2,7 +2,7 @@
 * Enhancement: Migrate from the in-SDK Material library to the [material_ui](https://pub.dev/packages/material_ui) package. Minimum supported versions are now Flutter 3.44 and Dart 3.12.
 * Enhancement: `showTopSnackBar` and `TapBounceContainer` no longer depend on any design library.
 * Bugfix [#80](https://github.com/LanarsInc/top-snackbar-flutter/issues/80): Fix "Null check operator used on a null value" when replacing a snackbar, thanks to [istornz](https://github.com/istornz)
-* Update example app to Flutter 3.47.8
+* Update example app to Flutter 3.47.8 
 * Add tests
 
 ## 3.4.0 - 18.06.2026

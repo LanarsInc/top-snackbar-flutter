@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 
 /// Widget for nice tap effect. It decrease widget scale while tapping
 class TapBounceContainer extends StatefulWidget {

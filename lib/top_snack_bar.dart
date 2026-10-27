@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 import 'package:top_snackbar_flutter/safe_area_values.dart';
+import 'package:top_snackbar_flutter/src/snack_bar_entry.dart';
 import 'package:top_snackbar_flutter/tap_bounce_container.dart';
 
 typedef ControllerCallback = void Function(AnimationController);
@@ -12,7 +13,7 @@ enum DismissType { onTap, onSwipe, none }
 /// Represents possible vertical position of snackbar.
 enum SnackBarPosition { top, bottom }
 
-OverlayEntry? _previousEntry;
+SnackBarEntry? _previousEntry;
 
 /// The [overlayState] argument is used to add specific overlay state.
 /// If you are sure that there is a overlay state in your [BuildContext],
@@ -76,16 +77,15 @@ void showTopSnackBar(
   List<DismissDirection> dismissDirection = const [DismissDirection.up],
   VoidCallback? onDismissed,
 }) {
-  late OverlayEntry _overlayEntry;
-  _overlayEntry = OverlayEntry(
+  late final SnackBarEntry snackBarEntry;
+  final overlayEntry = OverlayEntry(
     builder: (_) {
       return _TopSnackBar(
         onDismissed: () {
-          if (overlayState.mounted && _overlayEntry.mounted) {
-            _overlayEntry.remove();
-            _overlayEntry.dispose();
+          snackBarEntry.remove();
+          if (identical(_previousEntry, snackBarEntry)) {
+            _previousEntry = null;
           }
-          _previousEntry = null;
           onDismissed?.call();
         },
         animationDuration: animationDuration,
@@ -105,15 +105,11 @@ void showTopSnackBar(
       );
     },
   );
+  snackBarEntry = SnackBarEntry(overlayEntry);
 
-  if (_previousEntry != null && _previousEntry!.mounted) {
-    _previousEntry?.remove();
-    _previousEntry?.dispose();
-    _previousEntry = null;
-  }
-
-  overlayState.insert(_overlayEntry);
-  _previousEntry = _overlayEntry;
+  _previousEntry?.remove();
+  _previousEntry = snackBarEntry;
+  overlayState.insert(overlayEntry);
 }
 
 /// Widget that controls all animations

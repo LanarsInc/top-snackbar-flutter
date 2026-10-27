@@ -9,10 +9,12 @@ version: 1.0.0+1
 
 environment:
   sdk: ^3.12.0
+  flutter: '>=3.44.0'
 
 dependencies:
   flutter:
     sdk: flutter
+  material_ui: ^1.0.0
 
   top_snackbar_flutter:
     # When depending on this package from a real application you should use:
